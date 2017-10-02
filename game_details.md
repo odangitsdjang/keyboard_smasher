@@ -1,0 +1,1 @@
+- Game will have only three keys (QWE). I prefer to play maps where its a single tap on a keyboard (Osu is also like this) (instead of double or triple appearance at the exact same time)

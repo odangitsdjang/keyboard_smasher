@@ -10,12 +10,13 @@
         left: 50%; transform: translate(-50%, -50%);
         position: fixed;}
     </style>
+    <link rel="stylesheet" href="./css/background.css">
   </head>
   <body>
-    <canvas id="myCanvas" width="480" height="320"></canvas>
+    <canvas id="canvas" width="480" height="320"></canvas>
 
     <script>
-      const canvas = document.getElementById("myCanvas");
+      const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
       let ballRadius = 10;
       let dx = -2;
@@ -155,7 +156,7 @@
       }
       document.addEventListener("keydown", keyDownHandler, false);
       document.addEventListener("keyup", keyUpHandler, false);
-      setInterval(draw, 10);
+      setInterval(draw, 5);
     </script>
   </body>
 </html>
