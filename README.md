@@ -11,16 +11,16 @@ The basic goal of the game is to not fail the song and to achieve the highest sc
 
 ## Wireframes
 When a song starts:
-![thisshouldbeworkinglel](./doc/1.png)
+![thisshouldbeworkinglel](./docs/1.png)
 
 Barely hitting a note:
-![thisshouldbeworkinglel](./doc/3.png)
+![thisshouldbeworkinglel](./docs/3.png)
 
 Hitting a note close to perfectly:
-![thisshouldbeworkinglel](./doc/4.png)
+![thisshouldbeworkinglel](./docs/4.png)
 
 Successfully beat the song!
-![thisshouldbeworkinglel](./doc/5.png)
+![thisshouldbeworkinglel](./docs/5.png)
 
 ## Requirements (MVP):
   1. Upload a song and make a beatmap, possibly an algorithm to generate a beatmap based on its BPM; make the beatmap making process (beatmap class) scalable and easy.
