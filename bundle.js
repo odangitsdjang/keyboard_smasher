@@ -78,6 +78,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 document.addEventListener('DOMContentLoaded', () => {
     const options = {
+      songAudio: 0,
+      songMilliseconds: 0,
       qPressed: false,
       wPressed: false,
       ePressed: false
@@ -89,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const drawing = setInterval((e) => {
       __WEBPACK_IMPORTED_MODULE_1__canvas__["a" /* default */].draw(ctx, canvas, options);
-    }, 100);
+    }, 10);
     // clear interval  when game over?
 });
 
@@ -112,25 +114,39 @@ class Components {
     return COMPONENT_RADIUS;
   }
 
+
+
   // If 3 components, then divide 4 sections to center it evenly in the center
-  static drawComponent(ctx, canvasWidth, canvasHeight, options) {
+  static drawUserComponents(ctx, canvasWidth, canvasHeight, options) {
     for (let i = 0; i < COMPONENT_COUNT; i++) {
-      ctx.beginPath();
-      ctx.arc(canvasWidth/(COMPONENT_COUNT+1) + (canvasWidth/(COMPONENT_COUNT+1) * i), canvasHeight-60, COMPONENT_RADIUS,
-        0, Math.PI*2, true);
-      ctx.fillStyle = "#000000";
-      this.changeColor(ctx, options, i);
-      ctx.fill();
-      ctx.closePath();
+      this.drawBeatComponent(ctx, canvasWidth, canvasHeight, i, options, 1);
     }
   }
-  static changeColor(ctx, options, i) {
-    if (options.qPressed && i === 0) {
-      ctx.fillStyle = "#AA00FF";
-    } else if (options.wPressed && i === 1) {
+
+  // area === 1 specifies user area, 2 specifies game component
+  static drawBeatComponent(ctx, canvasWidth, canvasHeight, location, options, area) {
+    ctx.beginPath();
+    ctx.arc( canvasWidth/(COMPONENT_COUNT+1) +
+    (canvasWidth/(COMPONENT_COUNT+1) * location), canvasHeight-60, COMPONENT_RADIUS,
+      0, Math.PI*2, true);
+    ctx.fillStyle = "#000000";
+    if (area)
+      this.changeColor(ctx, location, options, area);
+    ctx.fill();
+    ctx.closePath();
+  }
+
+  static changeColor(ctx, i, options, area) {
+    if (area === 1) {
+      if (options.qPressed && i === 0) {
+        ctx.fillStyle = "#AA00FF";
+      } else if (options.wPressed && i === 1) {
         ctx.fillStyle = "#00AAFF";
-    } else if (options.ePressed && i === 2) {
-      ctx.fillStyle = "#FFAA00";
+      } else if (options.ePressed && i === 2) {
+        ctx.fillStyle = "#FFAA00";
+      }
+    } else if (area === 2) {
+      ctx.fillStyle = "#FFFFFF";
     }
   }
 
@@ -154,7 +170,8 @@ class Canvas {
   }
 
   static draw(ctx, canvas, options) {
-    __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawComponent(ctx, canvas.width, canvas.height, options);
+    __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawUserComponents(ctx, canvas.width, canvas.height, options);
+
   }
 
 
@@ -170,19 +187,31 @@ class Canvas {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__game_beatmap__ = __webpack_require__(5);
+
 class OnClickUtil {
-  static songLinks() {
+
+
+  static songLinks(options) {
+    const stopSong = (opt) => {
+      opt.songAudio.pause();
+      opt.songMilliseconds = 0;
+      opt.songAudio.currentTime = 0;
+    };
+
     const songs = document.getElementsByTagName('a');
     for(let i = 0; i < songs.length; i++) {
       songs[i].onclick = () => {
         if (songs[i].getAttribute('data-link')) {
           const songLink = songs[i].getAttribute('data-link');
-          window.song = new Audio(songLink);
-          window.song.play();
-          // BeatMap(songLink).play();
+          if (options.songAudio)
+            stopSong(options);
+          options.songAudio = new Audio(songLink);
+          options.songAudio.play();
+          new __WEBPACK_IMPORTED_MODULE_0__game_beatmap__["a" /* default */](songLink).play();
         } else {
-          window.song.pause();
-          window.song.currentTime = 0;
+          // should be replaced
+          stopSong(options);
         }
       };
     }
@@ -218,12 +247,41 @@ class OnClickUtil {
   }
 
   static addAllLinks(ctx, canvas, options) {
-    OnClickUtil.songLinks();
+    OnClickUtil.songLinks(options);
     OnClickUtil.keyPressedLinks(options);
   }
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (OnClickUtil);
+
+
+/***/ }),
+/* 4 */,
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class BeatMap {
+  constructor(songLink) {
+    this.songLink = songLink;
+    this.beatMapLink = "";
+    this.data = "";
+  }
+
+  grabData() {
+    // Add more file extensions here as needed
+    const extensionIndex = /(mp3|wav)$/.exec(this.songLink).index;
+    this.beatMapLink= this.songLink.slice(0, extensionIndex).concat("json");
+    this.data = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./data.json\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+  }
+
+  play() {
+    this.grabData();
+
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (BeatMap);
 
 
 /***/ })

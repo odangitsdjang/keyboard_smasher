@@ -4,6 +4,8 @@ import OnClickUtil from './onclicks';
 
 document.addEventListener('DOMContentLoaded', () => {
     const options = {
+      songAudio: 0,
+      songMilliseconds: 0,
       qPressed: false,
       wPressed: false,
       ePressed: false
@@ -15,6 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const drawing = setInterval((e) => {
       Canvas.draw(ctx, canvas, options);
-    }, 100);
+    }, 10);
     // clear interval  when game over?
 });

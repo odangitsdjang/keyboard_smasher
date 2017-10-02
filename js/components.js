@@ -11,25 +11,39 @@ class Components {
     return COMPONENT_RADIUS;
   }
 
+
+
   // If 3 components, then divide 4 sections to center it evenly in the center
-  static drawComponent(ctx, canvasWidth, canvasHeight, options) {
+  static drawUserComponents(ctx, canvasWidth, canvasHeight, options) {
     for (let i = 0; i < COMPONENT_COUNT; i++) {
-      ctx.beginPath();
-      ctx.arc(canvasWidth/(COMPONENT_COUNT+1) + (canvasWidth/(COMPONENT_COUNT+1) * i), canvasHeight-60, COMPONENT_RADIUS,
-        0, Math.PI*2, true);
-      ctx.fillStyle = "#000000";
-      this.changeColor(ctx, options, i);
-      ctx.fill();
-      ctx.closePath();
+      this.drawBeatComponent(ctx, canvasWidth, canvasHeight, i, options, 1);
     }
   }
-  static changeColor(ctx, options, i) {
-    if (options.qPressed && i === 0) {
-      ctx.fillStyle = "#AA00FF";
-    } else if (options.wPressed && i === 1) {
+
+  // area === 1 specifies user area, 2 specifies game component
+  static drawBeatComponent(ctx, canvasWidth, canvasHeight, location, options, area) {
+    ctx.beginPath();
+    ctx.arc( canvasWidth/(COMPONENT_COUNT+1) +
+    (canvasWidth/(COMPONENT_COUNT+1) * location), canvasHeight-60, COMPONENT_RADIUS,
+      0, Math.PI*2, true);
+    ctx.fillStyle = "#000000";
+    if (area)
+      this.changeColor(ctx, location, options, area);
+    ctx.fill();
+    ctx.closePath();
+  }
+
+  static changeColor(ctx, i, options, area) {
+    if (area === 1) {
+      if (options.qPressed && i === 0) {
+        ctx.fillStyle = "#AA00FF";
+      } else if (options.wPressed && i === 1) {
         ctx.fillStyle = "#00AAFF";
-    } else if (options.ePressed && i === 2) {
-      ctx.fillStyle = "#FFAA00";
+      } else if (options.ePressed && i === 2) {
+        ctx.fillStyle = "#FFAA00";
+      }
+    } else if (area === 2) {
+      ctx.fillStyle = "#FFFFFF";
     }
   }
 
