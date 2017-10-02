@@ -77,13 +77,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    const options = {
+      qPressed: false,
+      wPressed: false,
+      ePressed: false
+    };
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
 
-    __WEBPACK_IMPORTED_MODULE_2__onclicks__["a" /* default */].addAllLinks(ctx, canvas);
+    __WEBPACK_IMPORTED_MODULE_2__onclicks__["a" /* default */].addAllLinks(ctx, canvas, options);
 
     const drawing = setInterval((e) => {
-      __WEBPACK_IMPORTED_MODULE_1__canvas__["a" /* default */].draw(ctx, canvas);
+      __WEBPACK_IMPORTED_MODULE_1__canvas__["a" /* default */].draw(ctx, canvas, options);
     }, 100);
     // clear interval  when game over?
 });
@@ -108,18 +113,25 @@ class Components {
   }
 
   // If 3 components, then divide 4 sections to center it evenly in the center
-  static drawComponent(ctx, canvasWidth, canvasHeight) {
+  static drawComponent(ctx, canvasWidth, canvasHeight, options) {
     for (let i = 0; i < COMPONENT_COUNT; i++) {
       ctx.beginPath();
       ctx.arc(canvasWidth/(COMPONENT_COUNT+1) + (canvasWidth/(COMPONENT_COUNT+1) * i), canvasHeight-60, COMPONENT_RADIUS,
         0, Math.PI*2, true);
       ctx.fillStyle = "#000000";
+      this.changeColor(ctx, options, i);
       ctx.fill();
       ctx.closePath();
     }
   }
-  static changeColor() {
-    
+  static changeColor(ctx, options, i) {
+    if (options.qPressed && i === 0) {
+      ctx.fillStyle = "#AA00FF";
+    } else if (options.wPressed && i === 1) {
+        ctx.fillStyle = "#00AAFF";
+    } else if (options.ePressed && i === 2) {
+      ctx.fillStyle = "#FFAA00";
+    }
   }
 
 
@@ -137,13 +149,12 @@ class Components {
 
 
 class Canvas {
-
   static drawHealthBar() {
 
   }
 
-  static draw(ctx, canvas) {
-    __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawComponent(ctx, canvas.width, canvas.height);
+  static draw(ctx, canvas, options) {
+    __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawComponent(ctx, canvas.width, canvas.height, options);
   }
 
 
@@ -177,32 +188,28 @@ class OnClickUtil {
     }
   }
 
-  static keyPressedLinks() {
-    let qPressed = false;
-    let wPressed = false;
-    let ePressed = false;
-
+  static keyPressedLinks(options) {
     function keyDownHandler(e) {
       if (e.keyCode === 81) {
-        qPressed = true;
+        options.qPressed = true;
       }
       else if (e.keyCode === 87) {
-        wPressed = true;
+        options.wPressed = true;
       }
       else if (e.keyCode === 69) {
-        ePressed = true;
+        options.ePressed = true;
       }
     }
 
     function keyUpHandler(e) {
       if (e.keyCode === 81) {
-        qPressed = false;
+        options.qPressed = false;
       }
       else if (e.keyCode === 87) {
-        wPressed = false;
+        options.wPressed = false;
       }
       else if (e.keyCode === 69) {
-        ePressed = false;
+        options.ePressed = false;
       }
     }
 
@@ -210,9 +217,9 @@ class OnClickUtil {
     document.addEventListener("keyup", keyUpHandler, false);
   }
 
-  static addAllLinks(ctx, canvas) {
+  static addAllLinks(ctx, canvas, options) {
     OnClickUtil.songLinks();
-    OnClickUtil.keyPressedLinks();
+    OnClickUtil.keyPressedLinks(options);
   }
 }
 

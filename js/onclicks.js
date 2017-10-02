@@ -16,32 +16,28 @@ class OnClickUtil {
     }
   }
 
-  static keyPressedLinks() {
-    let qPressed = false;
-    let wPressed = false;
-    let ePressed = false;
-
+  static keyPressedLinks(options) {
     function keyDownHandler(e) {
       if (e.keyCode === 81) {
-        qPressed = true;
+        options.qPressed = true;
       }
       else if (e.keyCode === 87) {
-        wPressed = true;
+        options.wPressed = true;
       }
       else if (e.keyCode === 69) {
-        ePressed = true;
+        options.ePressed = true;
       }
     }
 
     function keyUpHandler(e) {
       if (e.keyCode === 81) {
-        qPressed = false;
+        options.qPressed = false;
       }
       else if (e.keyCode === 87) {
-        wPressed = false;
+        options.wPressed = false;
       }
       else if (e.keyCode === 69) {
-        ePressed = false;
+        options.ePressed = false;
       }
     }
 
@@ -49,9 +45,9 @@ class OnClickUtil {
     document.addEventListener("keyup", keyUpHandler, false);
   }
 
-  static addAllLinks(ctx, canvas) {
+  static addAllLinks(ctx, canvas, options) {
     OnClickUtil.songLinks();
-    OnClickUtil.keyPressedLinks();
+    OnClickUtil.keyPressedLinks(options);
   }
 }
 
