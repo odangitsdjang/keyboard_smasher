@@ -65,25 +65,158 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__canvas__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__onclicks__ = __webpack_require__(3);
+
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  const songs = document.getElementsByTagName('a');
-  for(let i = 0; i < songs.length; i++) {
-    songs[i].onclick = () => {
-      if (songs[i].getAttribute('data-link')) {
-        const songLink = songs[i].getAttribute('data-link');
-        window.song = new Audio(songLink);
-        window.song.play();
-        // BeatMap(songLink).play();
-      } else {
-        window.song.pause();
-        window.song.currentTime = 0;
-      }
-    };
-  }
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    __WEBPACK_IMPORTED_MODULE_2__onclicks__["a" /* default */].addAllLinks(ctx, canvas);
+
+    const drawing = setInterval((e) => {
+      __WEBPACK_IMPORTED_MODULE_1__canvas__["a" /* default */].draw(ctx, canvas);
+    }, 100);
+    // clear interval  when game over?
 });
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const COMPONENT_RADIUS = 20;
+const COMPONENT_COUNT = 3;
+
+// Make this class scalable so that if I want to change it later
+// then I can just change the numbers up at the top
+class Components {
+
+  // Use get so that you can use the constant without parenthesis
+  // i.e. Components.componentRadius
+  static get componentRadius() {
+    return COMPONENT_RADIUS;
+  }
+
+  // If 3 components, then divide 4 sections to center it evenly in the center
+  static drawComponent(ctx, canvasWidth, canvasHeight) {
+    for (let i = 0; i < COMPONENT_COUNT; i++) {
+      ctx.beginPath();
+      ctx.arc(canvasWidth/(COMPONENT_COUNT+1) + (canvasWidth/(COMPONENT_COUNT+1) * i), canvasHeight-60, COMPONENT_RADIUS,
+        0, Math.PI*2, true);
+      ctx.fillStyle = "#000000";
+      ctx.fill();
+      ctx.closePath();
+    }
+  }
+  static changeColor() {
+    
+  }
+
+
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (Components);
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components__ = __webpack_require__(1);
+
+
+class Canvas {
+
+  static drawHealthBar() {
+
+  }
+
+  static draw(ctx, canvas) {
+    __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawComponent(ctx, canvas.width, canvas.height);
+  }
+
+
+
+}
+
+
+/* harmony default export */ __webpack_exports__["a"] = (Canvas);
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class OnClickUtil {
+  static songLinks() {
+    const songs = document.getElementsByTagName('a');
+    for(let i = 0; i < songs.length; i++) {
+      songs[i].onclick = () => {
+        if (songs[i].getAttribute('data-link')) {
+          const songLink = songs[i].getAttribute('data-link');
+          window.song = new Audio(songLink);
+          window.song.play();
+          // BeatMap(songLink).play();
+        } else {
+          window.song.pause();
+          window.song.currentTime = 0;
+        }
+      };
+    }
+  }
+
+  static keyPressedLinks() {
+    let qPressed = false;
+    let wPressed = false;
+    let ePressed = false;
+
+    function keyDownHandler(e) {
+      if (e.keyCode === 81) {
+        qPressed = true;
+      }
+      else if (e.keyCode === 87) {
+        wPressed = true;
+      }
+      else if (e.keyCode === 69) {
+        ePressed = true;
+      }
+    }
+
+    function keyUpHandler(e) {
+      if (e.keyCode === 81) {
+        qPressed = false;
+      }
+      else if (e.keyCode === 87) {
+        wPressed = false;
+      }
+      else if (e.keyCode === 69) {
+        ePressed = false;
+      }
+    }
+
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
+  }
+
+  static addAllLinks(ctx, canvas) {
+    OnClickUtil.songLinks();
+    OnClickUtil.keyPressedLinks();
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (OnClickUtil);
 
 
 /***/ })
