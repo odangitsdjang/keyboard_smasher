@@ -72,7 +72,12 @@
 
 const COMPONENT_RADIUS = 30;
 const COMPONENT_COUNT = 3;
-const GAME_COMPONENT_SPEED = 4;
+const GAME_COMPONENT_SPEED = 1;
+const HEIGHT_FROM_BOTTOM = 60;
+
+const QCOLOR = "#AA00FF";
+const WCOLOR = "#00AAFF";
+const ECOLOR = "#FFAA00";
 // Make this class scalable so that if I want to change it later
 // then I can just change the numbers up at the top
 class Components {
@@ -109,19 +114,23 @@ class Components {
   // w: [position, position],
   // e: [position, position, position]
   // }
+  // ||
+  // (this.good(pos, key, canvas, options))
   static removeGameComponents(ctx, canvas, options) {
     Object.keys(options.activeComponents).forEach(key=> {
       options.activeComponents[key].forEach((pos,i)=> {
         // change after adding score logic/physics
-        if (options.activeComponents[key][i] > canvas.height ||
-            (options.qPressed && key === "q") ||
-            (options.wPressed && key === "w") ||
-            (options.ePressed && key === "e"))   {
+        if (pos > canvas.height ||
+            (this.amazing(pos, key, canvas, options)))   {
           // delete the element from active components
           options.activeComponents[key].splice(i,1);
         }
       });
     });
+  }
+
+  static bad() {
+
   }
 
   static renderGameComponents(ctx, canvas, options) {
@@ -133,17 +142,16 @@ class Components {
         options.activeComponents[key][i] += GAME_COMPONENT_SPEED;
         let loc = 0;
         if (key === "q") {
-          ctx.fillStyle = "#AA00FF";
+          ctx.fillStyle = QCOLOR;
           loc = 0;
         }
         else if (key === "w") {
-          ctx.fillStyle = "#00AAFF";
+          ctx.fillStyle = WCOLOR;
           loc = 1;
         }
         else if (key === "e") {
-          ctx.fillStyle = "#FFAA00";
+          ctx.fillStyle = ECOLOR;
           loc = 2;
-
         }
 
         ctx.beginPath();
@@ -165,7 +173,7 @@ class Components {
     const canvasWidth = canvas.width;
     const canvasHeight = canvas.height;
     ctx.arc( canvasWidth/(COMPONENT_COUNT+1) +
-    (canvasWidth/(COMPONENT_COUNT+1) * location), canvasHeight-60, COMPONENT_RADIUS,
+    (canvasWidth/(COMPONENT_COUNT+1) * location), canvasHeight-HEIGHT_FROM_BOTTOM, COMPONENT_RADIUS,
       0, Math.PI*2, true);
     ctx.fillStyle = "#000000";
     this.changeColor(ctx, location, options);
@@ -175,16 +183,69 @@ class Components {
 
   static changeColor(ctx, i, options) {
     if (options.qPressed && i === 0) {
-      ctx.fillStyle = "#AA00FF";
+      ctx.fillStyle = QCOLOR;
     } else if (options.wPressed && i === 1) {
-      ctx.fillStyle = "#00AAFF";
+      ctx.fillStyle = WCOLOR;
     } else if (options.ePressed && i === 2) {
-      ctx.fillStyle = "#FFAA00";
+      ctx.fillStyle = ECOLOR;
     }
   }
 
 
+  static good(pos, key, canvas, options) {
+    if (key === "q" && options.qPressed) {
+      // The bottom part of the component is touching the top part of user area
+      if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3)
+          && pos < canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
+        return true;
+    } else if (key === "w" && options.wPressed) {
+      if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3)
+          && pos < canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
+        return true;
+    } else if (key === "e" && options.ePressed) {
+      if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3)
+          && pos < canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
+        return true;
+    }
+    return false;
+  }
 
+  static great(pos, key, canvas, options) {
+    if (key === "q" && options.qPressed) {
+      if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*2)
+          && pos < canvas.height - HEIGHT_FROM_BOTTOM )
+        return true;
+    } else if (key === "w" && options.wPressed) {
+      if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*2)
+          && pos < canvas.height - HEIGHT_FROM_BOTTOM )
+        return true;
+    } else if (key === "e" && options.ePressed) {
+      if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*2)
+          && pos < canvas.height - HEIGHT_FROM_BOTTOM )
+        return true;
+    }
+    return false;
+  }
+
+  static amazing(pos, key, canvas, options) {
+    if (key === "q" && options.qPressed) {
+      if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*1.3)
+          && pos < canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS*(0.666) ) {
+
+            console.log(pos);
+            return true;
+          }
+    } else if (key === "w" && options.wPressed) {
+      if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*1.3)
+          && pos < canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS*(0.666) )
+        return true;
+    } else if (key === "e" && options.ePressed) {
+      if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*1.3)
+          && pos < canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS*(0.666) )
+        return true;
+    }
+    return false;
+  }
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (Components);
@@ -221,6 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
         w: [],
         e: []
       },
+      score: 0,
       qPressed: false,
       wPressed: false,
       ePressed: false
@@ -281,6 +343,7 @@ class OnClickUtil {
       opt.songAudio.pause();
       opt.songMilliseconds = 0;
       opt.songAudio.currentTime = 0;
+      opt.score = 0;
     };
 
     const songs = document.getElementsByTagName('a');
@@ -395,7 +458,7 @@ webpackEmptyContext.id = 5;
 /* 6 */
 /***/ (function(module, exports) {
 
-module.exports = {"bpm":"173.939","beatmaps":{"q":[1,2.2,2.371439,3.3,4.4,5.5,6.6],"w":[1.25,1.35,1.45,1.55,1.65,2.3772],"e":[1.7,1.8,1.9,1.95,2,2.05]}}
+module.exports = {"bpm":"173.939","beatmaps":{"q":[1,1.1,1.3,2.2,2.371439,3.3,3.5,3.7,3.9,4,4.1,4.4,5.5,6.6],"w":[1.25,1.35,1.45,1.55,1.65,2.3772],"e":[1.7,1.8,1.9,1.95,2,2.05]}}
 
 /***/ })
 /******/ ]);

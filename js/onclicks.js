@@ -7,6 +7,7 @@ class OnClickUtil {
       opt.songAudio.pause();
       opt.songMilliseconds = 0;
       opt.songAudio.currentTime = 0;
+      opt.score = 0;
     };
 
     const songs = document.getElementsByTagName('a');

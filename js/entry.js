@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         w: [],
         e: []
       },
+      score: 0,
       qPressed: false,
       wPressed: false,
       ePressed: false
