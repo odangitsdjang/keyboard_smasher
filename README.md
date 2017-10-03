@@ -35,7 +35,7 @@ Successfully beat the song!
   2. High scores
 
 ## Timeline:
-  - Day 1: Get game physics working; make a sample song; figure out how to make beatmaps
+  - Day 1: Get game physics working;
   - Day 2: Get all the components into the game; a health bar
   - Day 3: Revisit what I have so far and refactor/polish it
-  - Day 4: Style / Bonus
+  - Day 4: Add a song to beat / style / bonus

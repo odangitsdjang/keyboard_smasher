@@ -33,8 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const drawing = setInterval((e) => {
       options.songMilliseconds += INTERVAL_MILLISECOND;
-      Canvas.draw(ctx, canvas, options);
       OnClickUtil.handleKeyFrames(options);
+      Canvas.draw(ctx, canvas, options);
 
     }, INTERVAL_MILLISECOND);
     // clear interval  when game over?

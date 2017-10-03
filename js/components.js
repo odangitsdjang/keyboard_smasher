@@ -53,15 +53,12 @@ class Components {
       if (lastComponent > canvas.height ||
           (this.amazing(lastComponent, key, canvas, options)) ||
           (this.great(lastComponent, key, canvas, options)) ||
-          (this.good(lastComponent, key, canvas, options)))  {
+          (this.good(lastComponent, key, canvas, options)) ||
+          (this.bad(lastComponent, key, canvas, options))) {
         // delete the element from active components
         options.activeComponents[key].shift();
       }
     });
-  }
-
-  static bad() {
-
   }
 
   static renderGameComponents(ctx, canvas, options) {
@@ -122,6 +119,27 @@ class Components {
     }
   }
 
+
+  static bad(pos, key, canvas, options) {
+    let retVal = false;
+    if (key === "q" && options.qUp.value) {
+      if (pos < canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3)
+          || pos > canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
+        retVal = true;
+    } else if (key === "w" && options.wUp.value) {
+      if (pos < canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3)
+          || pos > canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
+        retVal = true;
+    } else if (key === "e" && options.eUp.value) {
+      if (pos < canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3)
+          || pos > canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
+        retVal = true;
+    }
+    if (retVal) {
+      console.log("bad");
+    }
+    return false;
+  }
 
   static good(pos, key, canvas, options) {
     let retVal = false;

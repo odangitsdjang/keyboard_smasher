@@ -124,15 +124,12 @@ class Components {
       if (lastComponent > canvas.height ||
           (this.amazing(lastComponent, key, canvas, options)) ||
           (this.great(lastComponent, key, canvas, options)) ||
-          (this.good(lastComponent, key, canvas, options)))  {
+          (this.good(lastComponent, key, canvas, options)) ||
+          (this.bad(lastComponent, key, canvas, options))) {
         // delete the element from active components
         options.activeComponents[key].shift();
       }
     });
-  }
-
-  static bad() {
-
   }
 
   static renderGameComponents(ctx, canvas, options) {
@@ -193,6 +190,27 @@ class Components {
     }
   }
 
+
+  static bad(pos, key, canvas, options) {
+    let retVal = false;
+    if (key === "q" && options.qUp.value) {
+      if (pos < canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3)
+          || pos > canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
+        retVal = true;
+    } else if (key === "w" && options.wUp.value) {
+      if (pos < canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3)
+          || pos > canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
+        retVal = true;
+    } else if (key === "e" && options.eUp.value) {
+      if (pos < canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3)
+          || pos > canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
+        retVal = true;
+    }
+    if (retVal) {
+      console.log("bad");
+    }
+    return false;
+  }
 
   static good(pos, key, canvas, options) {
     let retVal = false;
@@ -308,8 +326,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const drawing = setInterval((e) => {
       options.songMilliseconds += INTERVAL_MILLISECOND;
-      __WEBPACK_IMPORTED_MODULE_1__canvas__["a" /* default */].draw(ctx, canvas, options);
       __WEBPACK_IMPORTED_MODULE_2__onclicks__["a" /* default */].handleKeyFrames(options);
+      __WEBPACK_IMPORTED_MODULE_1__canvas__["a" /* default */].draw(ctx, canvas, options);
 
     }, INTERVAL_MILLISECOND);
     // clear interval  when game over?
@@ -462,7 +480,7 @@ class OnClickUtil {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__js_components__ = __webpack_require__(0);
 
 
-const beatmap1 = __webpack_require__(6);
+const beatmap1 = __webpack_require__(5);
 
 
 // this class still needs work to allow multiple songs
@@ -498,19 +516,19 @@ class BeatMap {
 /* 5 */
 /***/ (function(module, exports) {
 
+module.exports = {"bpm":"173.939","beatmaps":{"q":[1,1.1,1.3,2.2,2.371439,3.3,3.5,3.7,3.9,4,4.1,4.4,5.5,6.6],"w":[1.25,1.35,1.45,1.55,1.65,2.3772],"e":[1.7,1.8,1.9,1.95,2,2.05]}}
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
 function webpackEmptyContext(req) {
 	throw new Error("Cannot find module '" + req + "'.");
 }
 webpackEmptyContext.keys = function() { return []; };
 webpackEmptyContext.resolve = webpackEmptyContext;
 module.exports = webpackEmptyContext;
-webpackEmptyContext.id = 5;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-module.exports = {"bpm":"173.939","beatmaps":{"q":[1,1.1,1.3,2.2,2.371439,3.3,3.5,3.7,3.9,4,4.1,4.4,5.5,6.6],"w":[1.25,1.35,1.45,1.55,1.65,2.3772],"e":[1.7,1.8,1.9,1.95,2,2.05]}}
+webpackEmptyContext.id = 6;
 
 /***/ })
 /******/ ]);
