@@ -1,7 +1,7 @@
 import components from './components';
 import Canvas from './canvas';
 import OnClickUtil from './onclicks';
-// this is for 144 hertz
+// this handles 144 hertz monitors ;)
 export const INTERVAL_MILLISECOND = 6.944444;
 // currentPlayTime
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,9 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
         e: []
       },
       score: 0,
-      qPressed: false,
-      wPressed: false,
-      ePressed: false
+      qHeld: false,
+      qUp: {value: false, frames:0 },
+      wHeld: false,
+      wUp: {value: false, frames:0 },
+      eHeld: false,
+      eUp: {value: false, frames:0 }
     };
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
@@ -31,6 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const drawing = setInterval((e) => {
       options.songMilliseconds += INTERVAL_MILLISECOND;
       Canvas.draw(ctx, canvas, options);
+      OnClickUtil.handleKeyFrames(options);
+
     }, INTERVAL_MILLISECOND);
     // clear interval  when game over?
 });

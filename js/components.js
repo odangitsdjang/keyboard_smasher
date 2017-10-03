@@ -1,7 +1,7 @@
 import {INTERVAL_MILLISECOND} from './entry';
 const COMPONENT_RADIUS = 30;
 const COMPONENT_COUNT = 3;
-const GAME_COMPONENT_SPEED = 1;
+const GAME_COMPONENT_SPEED = 3;
 const HEIGHT_FROM_BOTTOM = 60;
 
 const QCOLOR = "#AA00FF";
@@ -43,18 +43,20 @@ class Components {
   // w: [position, position],
   // e: [position, position, position]
   // }
-  // ||
-  // (this.good(pos, key, canvas, options))
+
+  // method assumes that array will be kept in reversed order (which it should)
+  // because it adds on like a queue
   static removeGameComponents(ctx, canvas, options) {
     Object.keys(options.activeComponents).forEach(key=> {
-      options.activeComponents[key].forEach((pos,i)=> {
-        // change after adding score logic/physics
-        if (pos > canvas.height ||
-            (this.amazing(pos, key, canvas, options)))   {
-          // delete the element from active components
-          options.activeComponents[key].splice(i,1);
-        }
-      });
+      // makes sure to only use the last game element in each column
+      const lastComponent = options.activeComponents[key][0];
+      if (lastComponent > canvas.height ||
+          (this.amazing(lastComponent, key, canvas, options)) ||
+          (this.great(lastComponent, key, canvas, options)) ||
+          (this.good(lastComponent, key, canvas, options)))  {
+        // delete the element from active components
+        options.activeComponents[key].shift();
+      }
     });
   }
 
@@ -111,69 +113,78 @@ class Components {
   }
 
   static changeColor(ctx, i, options) {
-    if (options.qPressed && i === 0) {
+    if (options.qHeld && i === 0) {
       ctx.fillStyle = QCOLOR;
-    } else if (options.wPressed && i === 1) {
+    } else if (options.wHeld && i === 1) {
       ctx.fillStyle = WCOLOR;
-    } else if (options.ePressed && i === 2) {
+    } else if (options.eHeld && i === 2) {
       ctx.fillStyle = ECOLOR;
     }
   }
 
 
   static good(pos, key, canvas, options) {
-    if (key === "q" && options.qPressed) {
+    let retVal = false;
+    if (key === "q" && options.qUp.value) {
       // The bottom part of the component is touching the top part of user area
       if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3)
           && pos < canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
-        return true;
-    } else if (key === "w" && options.wPressed) {
+        retVal = true;
+    } else if (key === "w" && options.wUp.value) {
       if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3)
           && pos < canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
-        return true;
-    } else if (key === "e" && options.ePressed) {
+        retVal = true;
+    } else if (key === "e" && options.eUp.value) {
       if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3)
           && pos < canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
-        return true;
+        retVal = true;
+    }
+    if (retVal) {
+      console.log("good");
     }
     return false;
   }
 
   static great(pos, key, canvas, options) {
-    if (key === "q" && options.qPressed) {
+    let retVal = false;
+    if (key === "q" && options.qUp.value) {
       if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*2)
           && pos < canvas.height - HEIGHT_FROM_BOTTOM )
-        return true;
-    } else if (key === "w" && options.wPressed) {
+        retVal = true;
+    } else if (key === "w" && options.wUp.value) {
       if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*2)
           && pos < canvas.height - HEIGHT_FROM_BOTTOM )
-        return true;
-    } else if (key === "e" && options.ePressed) {
+        retVal = true;
+    } else if (key === "e" && options.eUp.value) {
       if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*2)
           && pos < canvas.height - HEIGHT_FROM_BOTTOM )
-        return true;
+        retVal = true;
+    }
+    if (retVal) {
+      console.log("great");
     }
     return false;
   }
 
   static amazing(pos, key, canvas, options) {
-    if (key === "q" && options.qPressed) {
-      if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*1.3)
-          && pos < canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS*(0.666) ) {
-
-            console.log(pos);
-            return true;
-          }
-    } else if (key === "w" && options.wPressed) {
+    let retVal = false;
+    if (key === "q" && options.qUp.value) {
       if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*1.3)
           && pos < canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS*(0.666) )
-        return true;
-    } else if (key === "e" && options.ePressed) {
+        retVal = true;
+    } else if (key === "w" && options.wUp.value) {
       if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*1.3)
           && pos < canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS*(0.666) )
-        return true;
+        retVal = true;
+    } else if (key === "e" && options.eUp.value) {
+      if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*1.3)
+          && pos < canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS*(0.666) )
+        retVal = true;
     }
-    return false;
+    if (retVal) {
+      console.log("amazing");
+    }
+    return retVal;
   }
 }
 
