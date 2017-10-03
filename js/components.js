@@ -22,7 +22,7 @@ class Components {
   // If 3 components, then divide 4 sections to center it evenly in the center
   static drawUserComponents(ctx, canvas, options) {
     for (let i = 0; i < COMPONENT_COUNT; i++) {
-      this.drawBeatComponent(ctx, canvas, i, options, 1);
+      this.drawBeatComponent(ctx, canvas, i, options);
     }
   }
 
@@ -95,8 +95,7 @@ class Components {
     });
   }
 
-  // area === 1 specifies user area, 2 specifies game component
-  static drawBeatComponent(ctx, canvas, location, options, area) {
+  static drawBeatComponent(ctx, canvas, location, options) {
     ctx.beginPath();
     const canvasWidth = canvas.width;
     const canvasHeight = canvas.height;
@@ -109,6 +108,36 @@ class Components {
     ctx.closePath();
   }
 
+  static drawHitResponse(ctx, canvas, options) {
+    if (options.hitResponse.value) {
+      if (options.hitResponse.frames < 10) {
+        ctx.font = "50px Arial";
+      } else if (options.hitResponse.frames < 15) {
+        ctx.font = "40px Arial";
+      } else if (options.hitResponse.frames < 27) {
+        ctx.font = "35px Arial";
+      } else if (options.hitResponse.frames < 30) {
+        ctx.font = "30px Arial";
+      } else if (options.hitResponse.frames > 45) {
+        options.hitResponse.value = 0;
+      }
+      options.hitResponse.frames++;
+      ctx.fillStyle = "#000000";
+      ctx.fillText(options.hitResponse.value, canvas.width/2 - 100, canvas.height/2-20);
+    }
+  }
+
+  static drawScore(ctx, canvas, options) {
+    const gradient=ctx.createLinearGradient(0,0,canvas.width,0);
+    gradient.addColorStop("0.8","black");
+    gradient.addColorStop("0.9","blue");
+    gradient.addColorStop("1.0","magenta");
+    ctx.fillStyle = gradient;
+    ctx.font = "22px Arial";
+    // ctx.fillStyle = "#000000";
+    ctx.fillText("Score: "+options.score, canvas.width-130, 40);
+
+  }
   static changeColor(ctx, i, options) {
     if (options.qHeld && i === 0) {
       ctx.fillStyle = QCOLOR;
@@ -136,7 +165,9 @@ class Components {
         retVal = true;
     }
     if (retVal) {
-      console.log("bad");
+      options.hitResponse.value = "Bad";
+      options.hitResponse.frames = 0;
+      options.score -= 50;
     }
     return false;
   }
@@ -158,7 +189,9 @@ class Components {
         retVal = true;
     }
     if (retVal) {
-      console.log("good");
+      options.hitResponse.value = "good";
+      options.hitResponse.frames = 0;
+      options.score += 100;
     }
     return false;
   }
@@ -179,7 +212,9 @@ class Components {
         retVal = true;
     }
     if (retVal) {
-      console.log("great");
+      options.hitResponse.value = "Great!";
+      options.hitResponse.frames = 0;
+      options.score += 150;
     }
     return false;
   }
@@ -200,7 +235,9 @@ class Components {
         retVal = true;
     }
     if (retVal) {
-      console.log("amazing");
+      options.hitResponse.value = "Amazing";
+      options.hitResponse.frames = 0;
+      options.score += 250;
     }
     return retVal;
   }

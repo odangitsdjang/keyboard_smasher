@@ -1,6 +1,6 @@
-/*credit to: */
+/* For the idea, credit to: */
 /*https://codepen.io/mattlebel/pen/bJCzx*/
-
+/*Picked my own colors tho :)*/
 * {
 	padding: 0;
 	margin: 0;
@@ -12,6 +12,7 @@ canvas {
 	left: 50%;
 	transform: translate(-50%, -50%);
 	position: fixed;
+	border-radius:5%;
 }
 
 html, body {
@@ -23,18 +24,25 @@ html, body {
 body {
   background-color: rgb(50,50,50);
 }
+/*#bc0986
+OG:
+(top, #ff3232 0%,#fcf528 16%,#28fc28 32%,#28fcf8 50%,#272ef9 66%,#ff28fb 82%,#ff3232 100%)
+
+/*ㅃ, ㄴ, ㅊ ㅍ 핑크, ㅃ*/
+
+
 #canvas {
 	/* W3C */
-	background: linear-gradient(top, #ff3232 0%,#fcf528 16%,#28fc28 32%,#28fcf8 50%,#272ef9 66%,#ff28fb 82%,#ff3232 100%);
+	background: linear-gradient(top, #980000 0%,#a77f03 16%,#0c8900 32%,#0c8900 50%,#004b83 66%,#af087d 82%,#980000 100%);
 
 	/* Firefox */
-	background: -moz-linear-gradient(top, #ff3232 0%, #fcf528 16%, #28fc28 32%, #28fcf8 50%, #272ef9 66%, #ff28fb 82%, #ff3232 100%);
+	background: -moz-linear-gradient(top, #980000 0%,#a77f03 16%,#0c8900 32%,#0c8900 50%,#004b83 66%,#af087d 82%,#980000 100%);
 
 	/* Chrome,Safari4+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ff3232), color-stop(16%,#fcf528), color-stop(32%,#28fc28), color-stop(50%,#28fcf8), color-stop(66%,#272ef9), color-stop(82%,#ff28fb), color-stop(100%,#ff3232));
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#980000), color-stop(16%,#a77f03), color-stop(32%,#0c8900), color-stop(50%,#0c8900), color-stop(66%,#004b83), color-stop(82%,#af087d), color-stop(100%,#980000));
 
 	/* Chrome10+,Safari5.1+ */
-	background: -webkit-linear-gradient(top, #ff3232 0%,#fcf528 16%,#28fc28 32%,#28fcf8 50%,#272ef9 66%,#ff28fb 82%,#ff3232 100%);
+	background: -webkit-linear-gradient(top, #980000 0%,#a77f03 16%,#0c8900 32%,#0c8900 50%,#004b83 66%,#af087d 82%,#980000 100%);
 
 	background-size: 1000%;
 	-moz-background-size: 1000%;
@@ -154,11 +162,5 @@ audio {
 		bottom: 30px;
 		top: 90px;
 		left: 10px;
-	}
-	#crushin {
-		display: none;
-	}
-	#counter {
-		top: 380px;
 	}
 }

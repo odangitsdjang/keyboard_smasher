@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e: []
       },
       score: 0,
+      hitResponse: { value: 0, frames: 0 },
       qHeld: false,
       qUp: {value: false, frames:0 },
       wHeld: false,
@@ -37,6 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
       Canvas.draw(ctx, canvas, options);
 
     }, INTERVAL_MILLISECOND);
+
+    // requestAnimationFrame
     // clear interval  when game over?
 });
 // console.log(options.songAudio.currentTime);

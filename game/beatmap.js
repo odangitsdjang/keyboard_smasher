@@ -16,6 +16,7 @@ class BeatMap {
 
   play() {
     this.options.beatMapData = this.data;
+    this.options.score = 0;
 
   }
 
