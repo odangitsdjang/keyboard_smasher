@@ -1,20 +1,31 @@
+import Components from '../js/components';
+
+const beatmap1 = require('../songs/Cartoon-Immortality.json');
+
+
+// this class still needs work to allow multiple songs
 class BeatMap {
-  constructor(songLink) {
+  constructor(ctx, canvas, options, songLink) {
+    this.ctx = ctx;
+    this.canvas = canvas;
+    this.options = options;
     this.songLink = songLink;
     this.beatMapLink = "";
-    this.data = "";
-  }
-
-  grabData() {
-    // Add more file extensions here as needed
-    const extensionIndex = /(mp3|wav)$/.exec(this.songLink).index;
-    this.beatMapLink= this.songLink.slice(0, extensionIndex).concat("json");
-    this.data = require('./data.json');
+    this.data = beatmap1;
   }
 
   play() {
-    this.grabData();
+    this.options.beatMapData = this.data;
 
+  }
+
+  // this function doesn't work because you cannot dynamically require files in javascript..
+  grabData() {
+
+    // Add more file extensions here as needed
+    const extensionIndex = /(mp3|wav)$/.exec(this.songLink).index;
+    this.beatMapLink = ".".concat(this.songLink.slice(0, extensionIndex).concat("json"));
+    this.data = require(this.beatMapLink);
   }
 }
 

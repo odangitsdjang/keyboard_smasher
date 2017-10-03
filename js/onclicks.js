@@ -2,7 +2,7 @@ import BeatMap from '../game/beatmap';
 class OnClickUtil {
 
 
-  static songLinks(options) {
+  static songLinks(ctx, canvas, options) {
     const stopSong = (opt) => {
       opt.songAudio.pause();
       opt.songMilliseconds = 0;
@@ -18,7 +18,7 @@ class OnClickUtil {
             stopSong(options);
           options.songAudio = new Audio(songLink);
           options.songAudio.play();
-          new BeatMap(songLink).play();
+          new BeatMap(ctx, canvas, options, songLink).play();
         } else {
           // should be replaced
           stopSong(options);
@@ -57,7 +57,7 @@ class OnClickUtil {
   }
 
   static addAllLinks(ctx, canvas, options) {
-    OnClickUtil.songLinks(options);
+    OnClickUtil.songLinks(ctx, canvas, options);
     OnClickUtil.keyPressedLinks(options);
   }
 }

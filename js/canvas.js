@@ -6,8 +6,9 @@ class Canvas {
   }
 
   static draw(ctx, canvas, options) {
-    Components.drawUserComponents(ctx, canvas.width, canvas.height, options);
-
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    Components.renderGameComponents(ctx, canvas, options);
+    Components.drawUserComponents(ctx, canvas, options);
   }
 
 
