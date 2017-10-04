@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -68,7 +68,7 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__entry__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__entry__ = __webpack_require__(2);
 
 const COMPONENT_RADIUS = 30;
 const COMPONENT_COUNT = 3;
@@ -162,7 +162,6 @@ class Components {
           0, Math.PI*2, true);
         ctx.fill();
         ctx.closePath();
-
       });
     });
   }
@@ -210,15 +209,20 @@ class Components {
   }
 
   static drawScore(ctx, canvas, options) {
-    const gradient=ctx.createLinearGradient(0,0,canvas.width,0);
-    gradient.addColorStop("0.8","black");
-    gradient.addColorStop("0.9","blue");
-    gradient.addColorStop("1.0","magenta");
-    ctx.fillStyle = gradient;
+    // const gradient=ctx.createLinearGradient(0,0,canvas.width,0);
+    // gradient.addColorStop("0.8","black");
+    // gradient.addColorStop("0.9","blue");
+    // gradient.addColorStop("1.0","magenta");
+    // ctx.fillStyle = gradient;
     ctx.font = "22px Arial";
-    // ctx.fillStyle = "#000000";
+    ctx.fillStyle = "#000000";
     ctx.fillText("Score: "+options.score, canvas.width-180, 40);
+  }
 
+  static drawStreak(ctx, canvas, options) {
+    ctx.font = "22px Arial";
+    ctx.fillStyle = "#000000";
+    ctx.fillText("Streak: "+options.streak.value, canvas.width-180, 80);
   }
 
   static miss(pos, key, canvas, options) {
@@ -226,9 +230,9 @@ class Components {
       options.hitResponse.value = "miss";
       options.hitResponse.frames = 0;
       options.hitResponse.count.miss++;
-      if (options.streakResponse.value > options.streakResponse.highest)
-        options.streakResponse.value = options.streakResponse.highest;
-      options.streakResponse.value = 0;
+      if (options.streak.value > options.streak.highest)
+        options.streak.highest = options.streak.value;
+      options.streak.value = 0;
       if (options.score >= 10) options.score -= 10;
       return true;
     }
@@ -258,9 +262,9 @@ class Components {
       options.hitResponse.value = "Bad";
       options.hitResponse.frames = 0;
       options.hitResponse.count.bad++;
-      if (options.streakResponse.value > options.streakResponse.highest)
-        options.streakResponse.value = options.streakResponse.highest;
-      options.streakResponse.value = 0;
+      if (options.streak.value > options.streak.highest)
+        options.streak.highest = options.streak.value;
+      options.streak.value = 0;
       if (options.score >= 5) options.score -= 5;
     }
     if (retVal === 1) retVal = 0;
@@ -288,6 +292,9 @@ class Components {
       options.hitResponse.value = "good";
       options.hitResponse.frames = 0;
       options.hitResponse.count.good++;
+      options.streak.value++;
+      if (options.streak.value > options.streak.highest)
+        options.streak.highest = options.streak.value;
       options.score += 20;
     }
     return retVal;
@@ -312,6 +319,9 @@ class Components {
       options.hitResponse.value = "Great!";
       options.hitResponse.frames = 0;
       options.hitResponse.count.great++;
+      options.streak.value++;
+      if (options.streak.value > options.streak.highest)
+        options.streak.highest = options.streak.value;
       options.score += 30;
     }
     return retVal;
@@ -336,6 +346,9 @@ class Components {
       options.hitResponse.value = "Amazing";
       options.hitResponse.frames = 0;
       options.hitResponse.count.amazing++;
+      options.streak.value++;
+      if (options.streak.value > options.streak.highest)
+        options.streak.highest = options.streak.value;
       options.score += 50;
     }
     return retVal;
@@ -347,70 +360,6 @@ class Components {
 
 /***/ }),
 /* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__canvas__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__onclicks__ = __webpack_require__(2);
-
-
-
-// import { }  from '../game/algorithm';
-
-// export const INTERVAL_MILLISECOND = 6.944444;   144hz
-// 60hz
-const INTERVAL_MILLISECOND = 16.666666;
-/* harmony export (immutable) */ __webpack_exports__["INTERVAL_MILLISECOND"] = INTERVAL_MILLISECOND;
-
-
-// currentPlayTime
-document.addEventListener('DOMContentLoaded', () => {
-    // options.activeComponents = {
-    // q: [position]
-    // w: [position, position],
-    // e: [position, position, position]
-    // }
-    const options = {
-      songAudio: 0,
-      beatMapData: 0,
-      activeComponents: {
-        q: [],
-        w: [],
-        e: []
-      },
-      score: 0,
-      hitResponse: { value: 0, frames: 0, count: {amazing: 0, great: 0, good: 0, bad: 0, miss: 0 } },
-      streakResponse: { value: 0, frames: 0, highest: 0 },
-      userAreaResponse: { frames: 0 },
-      qHeld: false,
-      qUp: {value: false, frames:0 },
-      wHeld: false,
-      wUp: {value: false, frames:0 },
-      eHeld: false,
-      eUp: {value: false, frames:0 },
-    };
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-    __WEBPACK_IMPORTED_MODULE_2__onclicks__["a" /* default */].addAllLinks(ctx, canvas, options);
-
-    // const drawing = setInterval((e) => {
-    //   OnClickUtil.handleKeyFrames(options);
-    //   Canvas.draw(ctx, canvas, options);
-    //
-    // }, INTERVAL_MILLISECOND);
-
-    requestAnimationFrame(e=>{
-      __WEBPACK_IMPORTED_MODULE_1__canvas__["a" /* default */].draw(ctx, canvas, options);
-    });
-    // clear interval  when game over?
-});
-// console.log(options.songAudio.currentTime);
-
-
-/***/ }),
-/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -426,7 +375,9 @@ class OnClickUtil {
       w: [],
       e: []
     };
-
+    options.hitResponse = { value: 0, frames: 0, count: {Amazing: 0, Great: 0, Good: 0, Bad: 0, Miss: 0 } };
+    options.streakResponse = { value: 0, frames: 0, highest: 0 };
+    options.finishedGameFrame = 0;
   }
   static songLinks(ctx, canvas, options) {
 
@@ -529,12 +480,79 @@ class OnClickUtil {
 
 
 /***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__canvas__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__onclicks__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__game_finished__ = __webpack_require__(7);
+
+
+
+
+// import { }  from '../game/algorithm';
+
+// export const INTERVAL_MILLISECOND = 6.944444;   144hz
+// 60hz
+const INTERVAL_MILLISECOND = 16.666666;
+/* harmony export (immutable) */ __webpack_exports__["INTERVAL_MILLISECOND"] = INTERVAL_MILLISECOND;
+
+
+// currentPlayTime
+document.addEventListener('DOMContentLoaded', () => {
+    // options.activeComponents = {
+    // q: [position]
+    // w: [position, position],
+    // e: [position, position, position]
+    // }
+    const options = {
+      songAudio: 0,
+      beatMapData: 0,
+      activeComponents: {
+        q: [],
+        w: [],
+        e: []
+      },
+      score: 0,
+      hitResponse: { value: 0, frames: 0, count: {Amazing: 0, Great: 0, Good: 0, Bad: 0, Miss: 0 }},
+      streak: { value: 0, highest: 0 },
+      finishedGameFrame: 0,
+      userAreaResponse: { frames: 0 },
+      qHeld: false,
+      qUp: {value: false, frames:0 },
+      wHeld: false,
+      wUp: {value: false, frames:0 },
+      eHeld: false,
+      eUp: {value: false, frames:0 },
+    };
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    __WEBPACK_IMPORTED_MODULE_2__onclicks__["a" /* default */].addAllLinks(ctx, canvas, options);
+    const g = new __WEBPACK_IMPORTED_MODULE_3__game_finished__["a" /* default */](ctx, canvas, options);
+    // const drawing = setInterval((e) => {
+    //   OnClickUtil.handleKeyFrames(options);
+    //   Canvas.draw(ctx, canvas, options);
+    //
+    // }, INTERVAL_MILLISECOND);
+
+    requestAnimationFrame(e=>{
+      __WEBPACK_IMPORTED_MODULE_1__canvas__["a" /* default */].draw(ctx, canvas, options, g);
+    });
+    // clear interval  when game over?
+});
+// console.log(options.songAudio.currentTime);
+
+
+/***/ }),
 /* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__onclicks__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__onclicks__ = __webpack_require__(1);
 
 
 class Canvas {
@@ -542,16 +560,21 @@ class Canvas {
 
   }
 
-  static draw(ctx, canvas, options) {
+  static draw(ctx, canvas, options, g) {
+
+
     __WEBPACK_IMPORTED_MODULE_1__onclicks__["a" /* default */].handleKeyFrames(options);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    g.renderGameFinished();
     __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawScore(ctx, canvas, options);
+    __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawStreak(ctx, canvas, options);
     __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawHitResponse(ctx, canvas, options);
     __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].renderGameComponents(ctx, canvas, options);
     __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawUserComponents(ctx, canvas, options);
     requestAnimationFrame(e=>{
-      Canvas.draw(ctx, canvas, options);
+      Canvas.draw(ctx, canvas, options, g);
     });
+
   }
 
 
@@ -568,7 +591,7 @@ class Canvas {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__js_components__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_onclicks__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_onclicks__ = __webpack_require__(1);
 
 
 const beatmap1 = __webpack_require__(5);
@@ -672,6 +695,62 @@ webpackEmptyContext.keys = function() { return []; };
 webpackEmptyContext.resolve = webpackEmptyContext;
 module.exports = webpackEmptyContext;
 webpackEmptyContext.id = 6;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class GameFinished {
+  constructor(ctx, canvas, options) {
+    this.options = options;
+    this.canvas = canvas;
+    this.ctx = ctx;
+  }
+
+  gameFinished(options) {
+    if (options.songAudio.currentTime && options.songAudio.duration) {
+      if (options.songAudio.currentTime >= options.songAudio.duration - 2)
+        return true;
+    }
+    return false;
+  }
+
+  renderGameFinished() {
+    // if (this.gameFinished(this.options) && this.options.finishedGameFrame) {
+    if (true) {
+      // Score:
+      // Highest Streak:
+      // Amazing:
+      // Great:
+      // Good:
+      // Bad:
+      // Miss:
+      //
+      const keys = Object.keys(this.options.hitResponse.count);
+      if (this.options.finishedGameFrame < 30) {
+        this.ctx.font = `${this.options.finishedGameFrame}px Arial`;
+      } else {
+          this.ctx.font = `30px Arial`;
+      }
+      this.ctx.fillStyle = "#000000";
+      const heightInc = 45;
+      let height =  (2*this.canvas.height/10);
+      this.ctx.fillText(`Longest Streak: ${this.options.streak.highest}`,
+        this.canvas.width/2 - 100, height+=heightInc);
+      keys.forEach(key =>  {
+        this.ctx.fillText(`${key}: ${this.options.hitResponse.count[key]}`,
+           this.canvas.width/2 - 100, height+=heightInc);
+      });
+
+      this.options.finishedGameFrame++;
+    }
+  }
+
+
+}
+/* harmony default export */ __webpack_exports__["a"] = (GameFinished);
+
 
 /***/ })
 /******/ ]);

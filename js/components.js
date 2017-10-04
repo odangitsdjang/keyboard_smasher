@@ -91,7 +91,6 @@ class Components {
           0, Math.PI*2, true);
         ctx.fill();
         ctx.closePath();
-
       });
     });
   }
@@ -139,15 +138,20 @@ class Components {
   }
 
   static drawScore(ctx, canvas, options) {
-    const gradient=ctx.createLinearGradient(0,0,canvas.width,0);
-    gradient.addColorStop("0.8","black");
-    gradient.addColorStop("0.9","blue");
-    gradient.addColorStop("1.0","magenta");
-    ctx.fillStyle = gradient;
+    // const gradient=ctx.createLinearGradient(0,0,canvas.width,0);
+    // gradient.addColorStop("0.8","black");
+    // gradient.addColorStop("0.9","blue");
+    // gradient.addColorStop("1.0","magenta");
+    // ctx.fillStyle = gradient;
     ctx.font = "22px Arial";
-    // ctx.fillStyle = "#000000";
+    ctx.fillStyle = "#000000";
     ctx.fillText("Score: "+options.score, canvas.width-180, 40);
+  }
 
+  static drawStreak(ctx, canvas, options) {
+    ctx.font = "22px Arial";
+    ctx.fillStyle = "#000000";
+    ctx.fillText("Streak: "+options.streak.value, canvas.width-180, 80);
   }
 
   static miss(pos, key, canvas, options) {
@@ -155,9 +159,9 @@ class Components {
       options.hitResponse.value = "miss";
       options.hitResponse.frames = 0;
       options.hitResponse.count.miss++;
-      if (options.streakResponse.value > options.streakResponse.highest)
-        options.streakResponse.value = options.streakResponse.highest;
-      options.streakResponse.value = 0;
+      if (options.streak.value > options.streak.highest)
+        options.streak.highest = options.streak.value;
+      options.streak.value = 0;
       if (options.score >= 10) options.score -= 10;
       return true;
     }
@@ -187,9 +191,9 @@ class Components {
       options.hitResponse.value = "Bad";
       options.hitResponse.frames = 0;
       options.hitResponse.count.bad++;
-      if (options.streakResponse.value > options.streakResponse.highest)
-        options.streakResponse.value = options.streakResponse.highest;
-      options.streakResponse.value = 0;
+      if (options.streak.value > options.streak.highest)
+        options.streak.highest = options.streak.value;
+      options.streak.value = 0;
       if (options.score >= 5) options.score -= 5;
     }
     if (retVal === 1) retVal = 0;
@@ -217,6 +221,9 @@ class Components {
       options.hitResponse.value = "good";
       options.hitResponse.frames = 0;
       options.hitResponse.count.good++;
+      options.streak.value++;
+      if (options.streak.value > options.streak.highest)
+        options.streak.highest = options.streak.value;
       options.score += 20;
     }
     return retVal;
@@ -241,6 +248,9 @@ class Components {
       options.hitResponse.value = "Great!";
       options.hitResponse.frames = 0;
       options.hitResponse.count.great++;
+      options.streak.value++;
+      if (options.streak.value > options.streak.highest)
+        options.streak.highest = options.streak.value;
       options.score += 30;
     }
     return retVal;
@@ -265,6 +275,9 @@ class Components {
       options.hitResponse.value = "Amazing";
       options.hitResponse.frames = 0;
       options.hitResponse.count.amazing++;
+      options.streak.value++;
+      if (options.streak.value > options.streak.highest)
+        options.streak.highest = options.streak.value;
       options.score += 50;
     }
     return retVal;

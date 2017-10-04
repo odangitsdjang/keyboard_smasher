@@ -1,6 +1,7 @@
 import components from './components';
 import Canvas from './canvas';
 import OnClickUtil from './onclicks';
+import GameFinished from './game_finished';
 // import { }  from '../game/algorithm';
 
 // export const INTERVAL_MILLISECOND = 6.944444;   144hz
@@ -23,8 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
         e: []
       },
       score: 0,
-      hitResponse: { value: 0, frames: 0, count: {amazing: 0, great: 0, good: 0, bad: 0, miss: 0 } },
-      streakResponse: { value: 0, frames: 0, highest: 0 },
+      hitResponse: { value: 0, frames: 0, count: {Amazing: 0, Great: 0, Good: 0, Bad: 0, Miss: 0 }},
+      streak: { value: 0, highest: 0 },
+      finishedGameFrame: 0,
       userAreaResponse: { frames: 0 },
       qHeld: false,
       qUp: {value: false, frames:0 },
@@ -36,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     OnClickUtil.addAllLinks(ctx, canvas, options);
-
+    const g = new GameFinished(ctx, canvas, options);
     // const drawing = setInterval((e) => {
     //   OnClickUtil.handleKeyFrames(options);
     //   Canvas.draw(ctx, canvas, options);
@@ -44,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // }, INTERVAL_MILLISECOND);
 
     requestAnimationFrame(e=>{
-      Canvas.draw(ctx, canvas, options);
+      Canvas.draw(ctx, canvas, options, g);
     });
     // clear interval  when game over?
 });

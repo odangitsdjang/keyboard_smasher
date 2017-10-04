@@ -9,7 +9,9 @@ class OnClickUtil {
       w: [],
       e: []
     };
-
+    options.hitResponse = { value: 0, frames: 0, count: {Amazing: 0, Great: 0, Good: 0, Bad: 0, Miss: 0 } };
+    options.streakResponse = { value: 0, frames: 0, highest: 0 };
+    options.finishedGameFrame = 0;
   }
   static songLinks(ctx, canvas, options) {
 
