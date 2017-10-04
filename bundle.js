@@ -72,7 +72,7 @@
 
 const COMPONENT_RADIUS = 30;
 const COMPONENT_COUNT = 3;
-const GAME_COMPONENT_SPEED = 5;
+const GAME_COMPONENT_SPEED = 6;
 const HEIGHT_FROM_BOTTOM = 60;
 
 const QCOLOR = "#AA00FF";
@@ -123,6 +123,7 @@ class Components {
           (this.good(lastComponent, key, canvas, options)) ||
           (this.bad(lastComponent, key, canvas, options))) {
         // delete the element from active components
+        console.log(options.activeComponents[key]);
         options.activeComponents[key].shift();
       }
     });
@@ -175,6 +176,16 @@ class Components {
     ctx.closePath();
   }
 
+  static changeColor(ctx, i, options) {
+    if (options.qHeld && i === 0) {
+      ctx.fillStyle = QCOLOR;
+    } else if (options.wHeld && i === 1) {
+      ctx.fillStyle = WCOLOR;
+    } else if (options.eHeld && i === 2) {
+      ctx.fillStyle = ECOLOR;
+    }
+  }
+
   static drawHitResponse(ctx, canvas, options) {
     if (options.hitResponse.value) {
       if (options.hitResponse.frames < 10) {
@@ -205,16 +216,6 @@ class Components {
     ctx.fillText("Score: "+options.score, canvas.width-130, 40);
 
   }
-  static changeColor(ctx, i, options) {
-    if (options.qHeld && i === 0) {
-      ctx.fillStyle = QCOLOR;
-    } else if (options.wHeld && i === 1) {
-      ctx.fillStyle = WCOLOR;
-    } else if (options.eHeld && i === 2) {
-      ctx.fillStyle = ECOLOR;
-    }
-  }
-
 
   static bad(pos, key, canvas, options) {
     let retVal = false;
@@ -234,8 +235,9 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "Bad";
       options.hitResponse.frames = 0;
-      options.score -= 50;
+      options.score -= 5;
     }
+    // return false when bad so it doesnt remove the component 
     return false;
   }
 
@@ -258,9 +260,9 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "good";
       options.hitResponse.frames = 0;
-      options.score += 100;
+      options.score += 20;
     }
-    return false;
+    return retVal;
   }
 
   static great(pos, key, canvas, options) {
@@ -281,9 +283,9 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "Great!";
       options.hitResponse.frames = 0;
-      options.score += 150;
+      options.score += 30;
     }
-    return false;
+    return retVal;
   }
 
   static amazing(pos, key, canvas, options) {
@@ -304,7 +306,7 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "Amazing";
       options.hitResponse.frames = 0;
-      options.score += 250;
+      options.score += 50;
     }
     return retVal;
   }
@@ -436,7 +438,7 @@ class OnClickUtil {
             stopSong(options);
           options.songAudio = new Audio(songLink);
           options.songAudio.play();
-          new __WEBPACK_IMPORTED_MODULE_0__game_beatmap__["a" /* default */](ctx, canvas, options, songLink).play();
+          new __WEBPACK_IMPORTED_MODULE_0__game_beatmap__["a" /* default */](options, songLink).play();
         } else {
           // should be replaced
           stopSong(options);
@@ -528,33 +530,40 @@ class OnClickUtil {
 
 
 const beatmap1 = __webpack_require__(5);
- // duration 235.23s
 
 // this class still needs work to allow multiple songs
 class BeatMap {
-  constructor(ctx, canvas, options, songLink) {
-    this.ctx = ctx;
-    this.canvas = canvas;
+  constructor(options) {
     this.options = options;
-    this.songLink = songLink;
-    this.beatMapLink = "";
-    this.data = beatmap1;
   }
-
   // Given the bpm get an array of seconds where there is a new measure
   increments(bpm) {
     return  (1 / (bpm/60));
   }
 
-  makeBeatMap(measure) {
-    // const songLengthSeconds = this.options.songAudio.duration;
-    // for some reason duration returns NaN (I guess it happens too fast)
-    const songLengthSeconds = 235 - 3;
-    let current = measure;
+  // chorus section = [[begin, end], [begin, end]]
+  makeBeatMap(tracknum) {
+    this.songData(tracknum);
+    let current = this.measure;
     const retArr = [];
-    for (let i = 0; i < songLengthSeconds; i+=measure) {
-      current-3 > 0 ? retArr.push(current-3) : "";
-      current += measure;
+    let i = 0;
+    while (i < this.songLengthSeconds) {
+      // subtract 2 : moving at 6 pixels, we want to achieve 740 pixels down
+      // and at 60 hz, we can move 360 pixels down per second, so 2 seconds is
+      // pretty close: 720 ~ 740
+      for (let j = 0; j < this.chorus.length; j++) {
+        if (this.chorus[j][0]-2 <= i && i <= this.chorus[j][1]-2) {
+          retArr.push(current -2);
+          current += this.measure/2;
+          i += this.measure/2;
+          continue;
+        }
+      }
+      if (current-2 > 0)
+        retArr.push(current-2);
+
+      current += this.measure;
+      i+= this.measure;
     }
     // inplace shuffle retArr
     this.shuffle(retArr);
@@ -562,12 +571,11 @@ class BeatMap {
     data.beatmaps["q"] = retArr.slice(0, retArr.length/3);
     data.beatmaps["w"] = retArr.slice(retArr.length/3, 2*retArr.length/3);
     data.beatmaps["e"] = retArr.slice(2 * retArr.length/3);
-    console.log(data);
     return data;
   }
 
   play() {
-    this.options.beatMapData = this.makeBeatMap(this.increments(173.939));
+    this.options.beatMapData = this.makeBeatMap(1);
     this.options.score = 0;
   }
 
@@ -576,6 +584,17 @@ class BeatMap {
       let j = Math.floor(Math.random() * i);
       [arr[i - 1], arr[j]] = [arr[j], arr[i - 1]];
     }
+  }
+
+  songData(tracknum) {
+    if (tracknum === 1) {
+      // const songLengthSeconds = this.options.songAudio.duration;
+      // for some reason duration returns NaN (I guess it happens too fast)
+      this.songLengthSeconds = 235 - 4;  // subtract 4 to end beatmap 4 seconds earlier
+      this.chorus = [[68,90], [145, 167]];
+      this.bpm = 173.939;
+    }
+    this.measure = this.increments(this.bpm);
   }
 
   // this function doesn't work because you cannot dynamically require files in javascript..

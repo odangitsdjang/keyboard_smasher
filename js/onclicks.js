@@ -19,7 +19,7 @@ class OnClickUtil {
             stopSong(options);
           options.songAudio = new Audio(songLink);
           options.songAudio.play();
-          new BeatMap(ctx, canvas, options, songLink).play();
+          new BeatMap(options, songLink).play();
         } else {
           // should be replaced
           stopSong(options);

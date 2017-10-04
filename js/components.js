@@ -1,7 +1,7 @@
 import {INTERVAL_MILLISECOND} from './entry';
 const COMPONENT_RADIUS = 30;
 const COMPONENT_COUNT = 3;
-const GAME_COMPONENT_SPEED = 5;
+const GAME_COMPONENT_SPEED = 6;
 const HEIGHT_FROM_BOTTOM = 60;
 
 const QCOLOR = "#AA00FF";
@@ -52,6 +52,7 @@ class Components {
           (this.good(lastComponent, key, canvas, options)) ||
           (this.bad(lastComponent, key, canvas, options))) {
         // delete the element from active components
+        console.log(options.activeComponents[key]);
         options.activeComponents[key].shift();
       }
     });
@@ -104,6 +105,16 @@ class Components {
     ctx.closePath();
   }
 
+  static changeColor(ctx, i, options) {
+    if (options.qHeld && i === 0) {
+      ctx.fillStyle = QCOLOR;
+    } else if (options.wHeld && i === 1) {
+      ctx.fillStyle = WCOLOR;
+    } else if (options.eHeld && i === 2) {
+      ctx.fillStyle = ECOLOR;
+    }
+  }
+
   static drawHitResponse(ctx, canvas, options) {
     if (options.hitResponse.value) {
       if (options.hitResponse.frames < 10) {
@@ -134,16 +145,6 @@ class Components {
     ctx.fillText("Score: "+options.score, canvas.width-130, 40);
 
   }
-  static changeColor(ctx, i, options) {
-    if (options.qHeld && i === 0) {
-      ctx.fillStyle = QCOLOR;
-    } else if (options.wHeld && i === 1) {
-      ctx.fillStyle = WCOLOR;
-    } else if (options.eHeld && i === 2) {
-      ctx.fillStyle = ECOLOR;
-    }
-  }
-
 
   static bad(pos, key, canvas, options) {
     let retVal = false;
@@ -163,8 +164,9 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "Bad";
       options.hitResponse.frames = 0;
-      options.score -= 50;
+      options.score -= 5;
     }
+    // return false when bad so it doesnt remove the component 
     return false;
   }
 
@@ -187,9 +189,9 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "good";
       options.hitResponse.frames = 0;
-      options.score += 100;
+      options.score += 20;
     }
-    return false;
+    return retVal;
   }
 
   static great(pos, key, canvas, options) {
@@ -210,9 +212,9 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "Great!";
       options.hitResponse.frames = 0;
-      options.score += 150;
+      options.score += 30;
     }
-    return false;
+    return retVal;
   }
 
   static amazing(pos, key, canvas, options) {
@@ -233,7 +235,7 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "Amazing";
       options.hitResponse.frames = 0;
-      options.score += 250;
+      options.score += 50;
     }
     return retVal;
   }
