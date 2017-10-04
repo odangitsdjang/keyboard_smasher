@@ -1,13 +1,22 @@
 import BeatMap from '../game/beatmap';
 class OnClickUtil {
 
+  static resetSongPoints(options, ctx) {
+    options.score = 0;
+    options.streak = 0;
+    options.activeComponents = {
+      q: [],
+      w: [],
+      e: []
+    };
 
+  }
   static songLinks(ctx, canvas, options) {
-    const stopSong = (opt) => {
+
+    const stopSong = (opt, context) => {
       opt.songAudio.pause();
-      opt.songMilliseconds = 0;
       opt.songAudio.currentTime = 0;
-      opt.score = 0;
+      this.resetSongPoints(opt, context);
     };
 
     const songs = document.getElementsByTagName('a');
@@ -16,10 +25,10 @@ class OnClickUtil {
         if (songs[i].getAttribute('data-link')) {
           const songLink = songs[i].getAttribute('data-link');
           if (options.songAudio)
-            stopSong(options);
+            stopSong(options, ctx);
           options.songAudio = new Audio(songLink);
           options.songAudio.play();
-          new BeatMap(options, songLink).play();
+          new BeatMap(options, ctx, songLink).play();
         } else {
           // should be replaced
           stopSong(options);

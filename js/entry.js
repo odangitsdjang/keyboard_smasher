@@ -23,13 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
         e: []
       },
       score: 0,
-      hitResponse: { value: 0, frames: 0 },
+      hitResponse: { value: 0, frames: 0, count: {amazing: 0, great: 0, good: 0, bad: 0, miss: 0 } },
+      streakResponse: { value: 0, frames: 0, highest: 0 },
+      userAreaResponse: { frames: 0 },
       qHeld: false,
       qUp: {value: false, frames:0 },
       wHeld: false,
       wUp: {value: false, frames:0 },
       eHeld: false,
-      eUp: {value: false, frames:0 }
+      eUp: {value: false, frames:0 },
     };
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");

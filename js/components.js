@@ -23,13 +23,18 @@ class Components {
     }
   }
 
+
   static addGameComponents(ctx, canvas, options) {
     if (options.songAudio.currentTime) {
       Object.keys(options.beatMapData.beatmaps).forEach(key => {
         options.beatMapData.beatmaps[key].forEach( secondVal => {
           if (secondVal >= options.songAudio.currentTime &&
-              secondVal < options.songAudio.currentTime+INTERVAL_MILLISECOND/1000 )
-            options.activeComponents[key].push(0);
+              secondVal < options.songAudio.currentTime+INTERVAL_MILLISECOND/1000 ) {
+                options.activeComponents[key].push(0);
+                // optimization because when we create beatmap we sorted it
+                // so we are guaranteed to only have one beatmap per key
+                return;
+              }
         });
       });
     }
@@ -46,13 +51,12 @@ class Components {
     Object.keys(options.activeComponents).forEach(key=> {
       // makes sure to only use the last game element in each column
       const lastComponent = options.activeComponents[key][0];
-      if (lastComponent > canvas.height ||
-          (this.amazing(lastComponent, key, canvas, options)) ||
+      if ((this.amazing(lastComponent, key, canvas, options)) ||
           (this.great(lastComponent, key, canvas, options)) ||
           (this.good(lastComponent, key, canvas, options)) ||
-          (this.bad(lastComponent, key, canvas, options))) {
+          (this.bad(lastComponent, key, canvas, options)) ||
+          (this.miss(lastComponent, key, canvas, options))) {
         // delete the element from active components
-        console.log(options.activeComponents[key]);
         options.activeComponents[key].shift();
       }
     });
@@ -142,32 +146,55 @@ class Components {
     ctx.fillStyle = gradient;
     ctx.font = "22px Arial";
     // ctx.fillStyle = "#000000";
-    ctx.fillText("Score: "+options.score, canvas.width-130, 40);
+    ctx.fillText("Score: "+options.score, canvas.width-180, 40);
 
   }
 
+  static miss(pos, key, canvas, options) {
+    if ( pos > canvas.height ) {
+      options.hitResponse.value = "miss";
+      options.hitResponse.frames = 0;
+      options.hitResponse.count.miss++;
+      if (options.streakResponse.value > options.streakResponse.highest)
+        options.streakResponse.value = options.streakResponse.highest;
+      options.streakResponse.value = 0;
+      if (options.score >= 10) options.score -= 10;
+      return true;
+    }
+    return false;
+  }
+
+  // only remove bad if it's past the user space
   static bad(pos, key, canvas, options) {
-    let retVal = false;
+    let retVal = 0;
     if (key === "q" && options.qUp.value) {
-      if (pos < canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3)
-          || pos > canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
-        retVal = true;
+      if (pos < canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3))
+        retVal = 1;
+      else if (pos > canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
+        retVal = 2;
     } else if (key === "w" && options.wUp.value) {
-      if (pos < canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3)
-          || pos > canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
-        retVal = true;
+      if (pos < canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3))
+        retVal = 1;
+      else if (pos > canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
+        retVal = 2;
     } else if (key === "e" && options.eUp.value) {
-      if (pos < canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3)
-          || pos > canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
-        retVal = true;
+      if (pos < canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3))
+        retVal = 1;
+      else if (pos > canvas.height - HEIGHT_FROM_BOTTOM + COMPONENT_RADIUS)
+        retVal = 2;
     }
     if (retVal) {
       options.hitResponse.value = "Bad";
       options.hitResponse.frames = 0;
-      options.score -= 5;
+      options.hitResponse.count.bad++;
+      if (options.streakResponse.value > options.streakResponse.highest)
+        options.streakResponse.value = options.streakResponse.highest;
+      options.streakResponse.value = 0;
+      if (options.score >= 5) options.score -= 5;
     }
-    // return false when bad so it doesnt remove the component 
-    return false;
+    if (retVal === 1) retVal = 0;
+    return retVal;
+
   }
 
   static good(pos, key, canvas, options) {
@@ -189,6 +216,7 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "good";
       options.hitResponse.frames = 0;
+      options.hitResponse.count.good++;
       options.score += 20;
     }
     return retVal;
@@ -212,6 +240,7 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "Great!";
       options.hitResponse.frames = 0;
+      options.hitResponse.count.great++;
       options.score += 30;
     }
     return retVal;
@@ -235,6 +264,7 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "Amazing";
       options.hitResponse.frames = 0;
+      options.hitResponse.count.amazing++;
       options.score += 50;
     }
     return retVal;

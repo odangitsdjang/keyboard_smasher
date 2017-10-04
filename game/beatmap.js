@@ -1,11 +1,12 @@
 import Components from '../js/components';
-
+import OnClickUtil from '../js/onclicks';
 const beatmap1 = require('../songs/Cartoon-Immortality.json');
 
 // this class still needs work to allow multiple songs
 class BeatMap {
-  constructor(options) {
+  constructor(options, ctx) {
     this.options = options;
+    this.ctx = ctx;
   }
   // Given the bpm get an array of seconds where there is a new measure
   increments(bpm) {
@@ -39,15 +40,16 @@ class BeatMap {
     // inplace shuffle retArr
     this.shuffle(retArr);
     const data = {beatmaps: {}};
-    data.beatmaps["q"] = retArr.slice(0, retArr.length/3);
-    data.beatmaps["w"] = retArr.slice(retArr.length/3, 2*retArr.length/3);
-    data.beatmaps["e"] = retArr.slice(2 * retArr.length/3);
+    data.beatmaps["q"] = retArr.slice(0, retArr.length/3).sort((a,b)=>a-b);
+    data.beatmaps["w"] = retArr.slice(retArr.length/3, 2*retArr.length/3).sort((a,b)=>a-b);
+    data.beatmaps["e"] = retArr.slice(2 * retArr.length/3).sort((a,b)=>a-b);
+    console.log(data);
     return data;
   }
 
   play() {
+    // OnClickUtil.resetSongPoints(this.options, this.ctx);
     this.options.beatMapData = this.makeBeatMap(1);
-    this.options.score = 0;
   }
 
   shuffle(arr) {
@@ -64,6 +66,7 @@ class BeatMap {
       this.songLengthSeconds = 235 - 4;  // subtract 4 to end beatmap 4 seconds earlier
       this.chorus = [[68,90], [145, 167]];
       this.bpm = 173.939;
+      this.break = [];
     }
     this.measure = this.increments(this.bpm);
   }
