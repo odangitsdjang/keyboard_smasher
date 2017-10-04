@@ -1,8 +1,12 @@
 import components from './components';
 import Canvas from './canvas';
 import OnClickUtil from './onclicks';
-// this handles 144 hertz monitors ;)
-export const INTERVAL_MILLISECOND = 6.944444;
+// import { }  from '../game/algorithm';
+
+// export const INTERVAL_MILLISECOND = 6.944444;   144hz
+// 60hz
+export const INTERVAL_MILLISECOND = 16.666666;
+
 // currentPlayTime
 document.addEventListener('DOMContentLoaded', () => {
     // options.activeComponents = {
@@ -29,17 +33,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
-
     OnClickUtil.addAllLinks(ctx, canvas, options);
 
-    const drawing = setInterval((e) => {
-      options.songMilliseconds += INTERVAL_MILLISECOND;
-      OnClickUtil.handleKeyFrames(options);
+    // const drawing = setInterval((e) => {
+    //   OnClickUtil.handleKeyFrames(options);
+    //   Canvas.draw(ctx, canvas, options);
+    //
+    // }, INTERVAL_MILLISECOND);
+
+    requestAnimationFrame(e=>{
       Canvas.draw(ctx, canvas, options);
-
-    }, INTERVAL_MILLISECOND);
-
-    // requestAnimationFrame
+    });
     // clear interval  when game over?
 });
 // console.log(options.songAudio.currentTime);

@@ -1,7 +1,7 @@
 import {INTERVAL_MILLISECOND} from './entry';
 const COMPONENT_RADIUS = 30;
 const COMPONENT_COUNT = 3;
-const GAME_COMPONENT_SPEED = 3;
+const GAME_COMPONENT_SPEED = 5;
 const HEIGHT_FROM_BOTTOM = 60;
 
 const QCOLOR = "#AA00FF";
@@ -16,9 +16,6 @@ class Components {
   static get componentRadius() {
     return COMPONENT_RADIUS;
   }
-
-
-
   // If 3 components, then divide 4 sections to center it evenly in the center
   static drawUserComponents(ctx, canvas, options) {
     for (let i = 0; i < COMPONENT_COUNT; i++) {
@@ -28,7 +25,6 @@ class Components {
 
   static addGameComponents(ctx, canvas, options) {
     if (options.songAudio.currentTime) {
-      // console.log(options.songAudio.currentTime);
       Object.keys(options.beatMapData.beatmaps).forEach(key => {
         options.beatMapData.beatmaps[key].forEach( secondVal => {
           if (secondVal >= options.songAudio.currentTime &&

@@ -72,7 +72,7 @@
 
 const COMPONENT_RADIUS = 30;
 const COMPONENT_COUNT = 3;
-const GAME_COMPONENT_SPEED = 3;
+const GAME_COMPONENT_SPEED = 5;
 const HEIGHT_FROM_BOTTOM = 60;
 
 const QCOLOR = "#AA00FF";
@@ -87,9 +87,6 @@ class Components {
   static get componentRadius() {
     return COMPONENT_RADIUS;
   }
-
-
-
   // If 3 components, then divide 4 sections to center it evenly in the center
   static drawUserComponents(ctx, canvas, options) {
     for (let i = 0; i < COMPONENT_COUNT; i++) {
@@ -99,7 +96,6 @@ class Components {
 
   static addGameComponents(ctx, canvas, options) {
     if (options.songAudio.currentTime) {
-      // console.log(options.songAudio.currentTime);
       Object.keys(options.beatMapData.beatmaps).forEach(key => {
         options.beatMapData.beatmaps[key].forEach( secondVal => {
           if (secondVal >= options.songAudio.currentTime &&
@@ -329,9 +325,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-// this handles 144 hertz monitors ;)
-const INTERVAL_MILLISECOND = 6.944444;
+// import { }  from '../game/algorithm';
+
+// export const INTERVAL_MILLISECOND = 6.944444;   144hz
+// 60hz
+const INTERVAL_MILLISECOND = 16.666666;
 /* harmony export (immutable) */ __webpack_exports__["INTERVAL_MILLISECOND"] = INTERVAL_MILLISECOND;
+
 
 // currentPlayTime
 document.addEventListener('DOMContentLoaded', () => {
@@ -359,17 +359,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
-
     __WEBPACK_IMPORTED_MODULE_2__onclicks__["a" /* default */].addAllLinks(ctx, canvas, options);
 
-    const drawing = setInterval((e) => {
-      options.songMilliseconds += INTERVAL_MILLISECOND;
-      __WEBPACK_IMPORTED_MODULE_2__onclicks__["a" /* default */].handleKeyFrames(options);
+    // const drawing = setInterval((e) => {
+    //   OnClickUtil.handleKeyFrames(options);
+    //   Canvas.draw(ctx, canvas, options);
+    //
+    // }, INTERVAL_MILLISECOND);
+
+    requestAnimationFrame(e=>{
       __WEBPACK_IMPORTED_MODULE_1__canvas__["a" /* default */].draw(ctx, canvas, options);
-
-    }, INTERVAL_MILLISECOND);
-
-    // requestAnimationFrame
+    });
     // clear interval  when game over?
 });
 // console.log(options.songAudio.currentTime);
@@ -381,6 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__onclicks__ = __webpack_require__(3);
 
 
 class Canvas {
@@ -389,11 +390,15 @@ class Canvas {
   }
 
   static draw(ctx, canvas, options) {
+    __WEBPACK_IMPORTED_MODULE_1__onclicks__["a" /* default */].handleKeyFrames(options);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawScore(ctx, canvas, options);
     __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawHitResponse(ctx, canvas, options);
     __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].renderGameComponents(ctx, canvas, options);
     __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawUserComponents(ctx, canvas, options);
+    requestAnimationFrame(e=>{
+      Canvas.draw(ctx, canvas, options);
+    });
   }
 
 
@@ -523,7 +528,7 @@ class OnClickUtil {
 
 
 const beatmap1 = __webpack_require__(5);
-
+ // duration 235.23s
 
 // this class still needs work to allow multiple songs
 class BeatMap {
@@ -536,10 +541,41 @@ class BeatMap {
     this.data = beatmap1;
   }
 
-  play() {
-    this.options.beatMapData = this.data;
-    this.options.score = 0;
+  // Given the bpm get an array of seconds where there is a new measure
+  increments(bpm) {
+    return  (1 / (bpm/60));
+  }
 
+  makeBeatMap(measure) {
+    // const songLengthSeconds = this.options.songAudio.duration;
+    // for some reason duration returns NaN (I guess it happens too fast)
+    const songLengthSeconds = 235 - 3;
+    let current = measure;
+    const retArr = [];
+    for (let i = 0; i < songLengthSeconds; i+=measure) {
+      current-3 > 0 ? retArr.push(current-3) : "";
+      current += measure;
+    }
+    // inplace shuffle retArr
+    this.shuffle(retArr);
+    const data = {beatmaps: {}};
+    data.beatmaps["q"] = retArr.slice(0, retArr.length/3);
+    data.beatmaps["w"] = retArr.slice(retArr.length/3, 2*retArr.length/3);
+    data.beatmaps["e"] = retArr.slice(2 * retArr.length/3);
+    console.log(data);
+    return data;
+  }
+
+  play() {
+    this.options.beatMapData = this.makeBeatMap(this.increments(173.939));
+    this.options.score = 0;
+  }
+
+  shuffle(arr) {
+    for (let i = arr.length; i; i--) {
+      let j = Math.floor(Math.random() * i);
+      [arr[i - 1], arr[j]] = [arr[j], arr[i - 1]];
+    }
   }
 
   // this function doesn't work because you cannot dynamically require files in javascript..
@@ -559,7 +595,7 @@ class BeatMap {
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = {"bpm":"173.939","beatmaps":{"q":[1,1.1,1.3,2.2,2.371439,3.3,3.5,3.7,3.9,4,4.1,4.4,5.5,6.6],"w":[1.25,1.35,1.45,1.55,1.65,2.3772],"e":[1.7,1.8,1.9,1.95,2,2.05]}}
+module.exports = {"bpm":"173.939","beatmaps":{"q":[1,1.1,1.3,2.2,2.371439,3.3,3.5,3.7,3.9,4,4.1,4.4,5.5,6.6],"w":[1.25,1.35,1.45,1.55,1.65,2.3772],"e":[0.10453664790530048,0.4494851643392228,0.7944336807731451,1.139382197207067,1.484330713640989,1.8292792300749108,2.1742277465088327,2.5191762629427545,2.8641247793766764,3.2090732958105983,3.55402181224452,3.898970328678442,4.243918845112364,4.588867361546286,4.933815877980208,5.2787643944141305,5.623712910848052,5.968661427281974,6.313609943715896,6.658558460149818,7.00350697658374,7.348455493017662,7.693404009451584,8.038352525885506,8.383301042319427,8.72824955875335,9.073198075187271,9.418146591621193,9.763095108055115,10.108043624489037,10.452992140922959,10.79794065735688,11.142889173790802,11.487837690224724,11.832786206658646,12.177734723092568,12.52268323952649,12.867631755960412,13.212580272394334]}}
 
 /***/ }),
 /* 6 */
