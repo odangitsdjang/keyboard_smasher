@@ -1,9 +1,9 @@
 import BeatMap from '../game/beatmap';
 class OnClickUtil {
 
-  static resetSongPoints(options, ctx) {
+  static resetSong(options, ctx) {
     options.score = 0;
-    options.streak = 0;
+    options.streak = {value: 0, highest: 0 };
     options.activeComponents = {
       q: [],
       w: [],
@@ -12,13 +12,16 @@ class OnClickUtil {
     options.hitResponse = { value: 0, frames: 0, count: {Amazing: 0, Great: 0, Good: 0, Bad: 0, Miss: 0 } };
     options.streakResponse = { value: 0, frames: 0, highest: 0 };
     options.finishedGameFrame = 0;
+    options.gameOver = 0;
+    let health = document.getElementById("health");
+    health.value = 100;
   }
   static songLinks(ctx, canvas, options) {
 
     const stopSong = (opt, context) => {
       opt.songAudio.pause();
       opt.songAudio.currentTime = 0;
-      this.resetSongPoints(opt, context);
+      this.resetSong(opt, context);
     };
 
     const songs = document.getElementsByTagName('a');

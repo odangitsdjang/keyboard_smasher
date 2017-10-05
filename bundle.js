@@ -74,7 +74,6 @@ const COMPONENT_RADIUS = 30;
 const COMPONENT_COUNT = 3;
 const GAME_COMPONENT_SPEED = 6;
 const HEIGHT_FROM_BOTTOM = 60;
-
 const QCOLOR = "#AA00FF";
 const WCOLOR = "#00AAFF";
 const ECOLOR = "#FFAA00";
@@ -118,24 +117,24 @@ class Components {
 
   // method assumes that array will be kept in reversed order (which it should)
   // because it adds on like a queue
-  static removeGameComponents(ctx, canvas, options) {
+  static removeGameComponents(ctx, canvas, options, health) {
     Object.keys(options.activeComponents).forEach(key=> {
       // makes sure to only use the last game element in each column
       const lastComponent = options.activeComponents[key][0];
-      if ((this.amazing(lastComponent, key, canvas, options)) ||
-          (this.great(lastComponent, key, canvas, options)) ||
-          (this.good(lastComponent, key, canvas, options)) ||
-          (this.bad(lastComponent, key, canvas, options)) ||
-          (this.miss(lastComponent, key, canvas, options))) {
+      if ((this.amazing(lastComponent, key, canvas, options, health)) ||
+          (this.great(lastComponent, key, canvas, options, health)) ||
+          (this.good(lastComponent, key, canvas, options, health)) ||
+          (this.bad(lastComponent, key, canvas, options, health)) ||
+          (this.miss(lastComponent, key, canvas, options, health))) {
         // delete the element from active components
         options.activeComponents[key].shift();
       }
     });
   }
 
-  static renderGameComponents(ctx, canvas, options) {
+  static renderGameComponents(ctx, canvas, options, health) {
     this.addGameComponents(ctx, canvas, options);
-    this.removeGameComponents(ctx, canvas, options);
+    this.removeGameComponents(ctx, canvas, options, health);
     Object.keys(options.activeComponents).forEach(key=> {
       options.activeComponents[key].forEach((pos,i)=> {
 
@@ -225,11 +224,14 @@ class Components {
     ctx.fillText("Streak: "+options.streak.value, canvas.width-180, 80);
   }
 
-  static miss(pos, key, canvas, options) {
+  static miss(pos, key, canvas, options, health) {
     if ( pos > canvas.height ) {
       options.hitResponse.value = "miss";
       options.hitResponse.frames = 0;
-      options.hitResponse.count.miss++;
+      options.hitResponse.count.Miss++;
+      console.log(health);
+      health.value -= 10;
+      if (health.value <= 0) options.gameOver = 1;
       if (options.streak.value > options.streak.highest)
         options.streak.highest = options.streak.value;
       options.streak.value = 0;
@@ -240,7 +242,7 @@ class Components {
   }
 
   // only remove bad if it's past the user space
-  static bad(pos, key, canvas, options) {
+  static bad(pos, key, canvas, options, health) {
     let retVal = 0;
     if (key === "q" && options.qUp.value) {
       if (pos < canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3))
@@ -261,7 +263,9 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "Bad";
       options.hitResponse.frames = 0;
-      options.hitResponse.count.bad++;
+      options.hitResponse.count.Bad++;
+      health.value -= 6;
+      if (health.value <= 0) options.gameOver = 1;
       if (options.streak.value > options.streak.highest)
         options.streak.highest = options.streak.value;
       options.streak.value = 0;
@@ -272,7 +276,7 @@ class Components {
 
   }
 
-  static good(pos, key, canvas, options) {
+  static good(pos, key, canvas, options, health) {
     let retVal = false;
     if (key === "q" && options.qUp.value) {
       // The bottom part of the component is touching the top part of user area
@@ -291,7 +295,8 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "good";
       options.hitResponse.frames = 0;
-      options.hitResponse.count.good++;
+      options.hitResponse.count.Good++;
+      health.value++;
       options.streak.value++;
       if (options.streak.value > options.streak.highest)
         options.streak.highest = options.streak.value;
@@ -300,7 +305,7 @@ class Components {
     return retVal;
   }
 
-  static great(pos, key, canvas, options) {
+  static great(pos, key, canvas, options, health) {
     let retVal = false;
     if (key === "q" && options.qUp.value) {
       if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*2)
@@ -318,7 +323,8 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "Great!";
       options.hitResponse.frames = 0;
-      options.hitResponse.count.great++;
+      options.hitResponse.count.Great++;
+      health.value++;
       options.streak.value++;
       if (options.streak.value > options.streak.highest)
         options.streak.highest = options.streak.value;
@@ -327,7 +333,7 @@ class Components {
     return retVal;
   }
 
-  static amazing(pos, key, canvas, options) {
+  static amazing(pos, key, canvas, options, health) {
     let retVal = false;
     if (key === "q" && options.qUp.value) {
       if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*1.3)
@@ -345,7 +351,8 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "Amazing";
       options.hitResponse.frames = 0;
-      options.hitResponse.count.amazing++;
+      options.hitResponse.count.Amazing++;
+      health.value++;
       options.streak.value++;
       if (options.streak.value > options.streak.highest)
         options.streak.highest = options.streak.value;
@@ -367,9 +374,9 @@ class Components {
 
 class OnClickUtil {
 
-  static resetSongPoints(options, ctx) {
+  static resetSong(options, ctx) {
     options.score = 0;
-    options.streak = 0;
+    options.streak = {value: 0, highest: 0 };
     options.activeComponents = {
       q: [],
       w: [],
@@ -378,13 +385,16 @@ class OnClickUtil {
     options.hitResponse = { value: 0, frames: 0, count: {Amazing: 0, Great: 0, Good: 0, Bad: 0, Miss: 0 } };
     options.streakResponse = { value: 0, frames: 0, highest: 0 };
     options.finishedGameFrame = 0;
+    options.gameOver = 0;
+    let health = document.getElementById("health");
+    health.value = 100;
   }
   static songLinks(ctx, canvas, options) {
 
     const stopSong = (opt, context) => {
       opt.songAudio.pause();
       opt.songAudio.currentTime = 0;
-      this.resetSongPoints(opt, context);
+      this.resetSong(opt, context);
     };
 
     const songs = document.getElementsByTagName('a');
@@ -520,6 +530,7 @@ document.addEventListener('DOMContentLoaded', () => {
       hitResponse: { value: 0, frames: 0, count: {Amazing: 0, Great: 0, Good: 0, Bad: 0, Miss: 0 }},
       streak: { value: 0, highest: 0 },
       finishedGameFrame: 0,
+      gameOver: 0,
       userAreaResponse: { frames: 0 },
       qHeld: false,
       qUp: {value: false, frames:0 },
@@ -561,16 +572,19 @@ class Canvas {
   }
 
   static draw(ctx, canvas, options, g) {
-
-
-    __WEBPACK_IMPORTED_MODULE_1__onclicks__["a" /* default */].handleKeyFrames(options);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let health = document.getElementById("health");
+    if (!options.gameOver) {
+      __WEBPACK_IMPORTED_MODULE_1__onclicks__["a" /* default */].handleKeyFrames(options);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawScore(ctx, canvas, options);
+      __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawStreak(ctx, canvas, options);
+      __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawHitResponse(ctx, canvas, options);
+      __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].renderGameComponents(ctx, canvas, options, health);
+      __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawUserComponents(ctx, canvas, options);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
     g.renderGameFinished();
-    __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawScore(ctx, canvas, options);
-    __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawStreak(ctx, canvas, options);
-    __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawHitResponse(ctx, canvas, options);
-    __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].renderGameComponents(ctx, canvas, options);
-    __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawUserComponents(ctx, canvas, options);
     requestAnimationFrame(e=>{
       Canvas.draw(ctx, canvas, options, g);
     });
@@ -637,7 +651,7 @@ class BeatMap {
     data.beatmaps["q"] = retArr.slice(0, retArr.length/3).sort((a,b)=>a-b);
     data.beatmaps["w"] = retArr.slice(retArr.length/3, 2*retArr.length/3).sort((a,b)=>a-b);
     data.beatmaps["e"] = retArr.slice(2 * retArr.length/3).sort((a,b)=>a-b);
-    console.log(data);
+    // console.log(data);
     return data;
   }
 
@@ -717,16 +731,7 @@ class GameFinished {
   }
 
   renderGameFinished() {
-    // if (this.gameFinished(this.options) && this.options.finishedGameFrame) {
-    if (true) {
-      // Score:
-      // Highest Streak:
-      // Amazing:
-      // Great:
-      // Good:
-      // Bad:
-      // Miss:
-      //
+    if (this.gameFinished(this.options) || this.options.gameOver) {
       const keys = Object.keys(this.options.hitResponse.count);
       if (this.options.finishedGameFrame < 30) {
         this.ctx.font = `${this.options.finishedGameFrame}px Arial`;
@@ -736,8 +741,14 @@ class GameFinished {
       this.ctx.fillStyle = "#000000";
       const heightInc = 45;
       let height =  (2*this.canvas.height/10);
+      const successOrGameOver = this.options.gameOver ? "Game Over!" : "Success!";
+      this.ctx.fillText(successOrGameOver,
+        this.canvas.width/2 - 100, height+=heightInc);
+      this.ctx.fillText(`Score: ${this.options.score}`,
+        this.canvas.width/2 - 100, height+=heightInc);
       this.ctx.fillText(`Longest Streak: ${this.options.streak.highest}`,
         this.canvas.width/2 - 100, height+=heightInc);
+
       keys.forEach(key =>  {
         this.ctx.fillText(`${key}: ${this.options.hitResponse.count[key]}`,
            this.canvas.width/2 - 100, height+=heightInc);

@@ -3,7 +3,6 @@ const COMPONENT_RADIUS = 30;
 const COMPONENT_COUNT = 3;
 const GAME_COMPONENT_SPEED = 6;
 const HEIGHT_FROM_BOTTOM = 60;
-
 const QCOLOR = "#AA00FF";
 const WCOLOR = "#00AAFF";
 const ECOLOR = "#FFAA00";
@@ -47,24 +46,24 @@ class Components {
 
   // method assumes that array will be kept in reversed order (which it should)
   // because it adds on like a queue
-  static removeGameComponents(ctx, canvas, options) {
+  static removeGameComponents(ctx, canvas, options, health) {
     Object.keys(options.activeComponents).forEach(key=> {
       // makes sure to only use the last game element in each column
       const lastComponent = options.activeComponents[key][0];
-      if ((this.amazing(lastComponent, key, canvas, options)) ||
-          (this.great(lastComponent, key, canvas, options)) ||
-          (this.good(lastComponent, key, canvas, options)) ||
-          (this.bad(lastComponent, key, canvas, options)) ||
-          (this.miss(lastComponent, key, canvas, options))) {
+      if ((this.amazing(lastComponent, key, canvas, options, health)) ||
+          (this.great(lastComponent, key, canvas, options, health)) ||
+          (this.good(lastComponent, key, canvas, options, health)) ||
+          (this.bad(lastComponent, key, canvas, options, health)) ||
+          (this.miss(lastComponent, key, canvas, options, health))) {
         // delete the element from active components
         options.activeComponents[key].shift();
       }
     });
   }
 
-  static renderGameComponents(ctx, canvas, options) {
+  static renderGameComponents(ctx, canvas, options, health) {
     this.addGameComponents(ctx, canvas, options);
-    this.removeGameComponents(ctx, canvas, options);
+    this.removeGameComponents(ctx, canvas, options, health);
     Object.keys(options.activeComponents).forEach(key=> {
       options.activeComponents[key].forEach((pos,i)=> {
 
@@ -154,11 +153,14 @@ class Components {
     ctx.fillText("Streak: "+options.streak.value, canvas.width-180, 80);
   }
 
-  static miss(pos, key, canvas, options) {
+  static miss(pos, key, canvas, options, health) {
     if ( pos > canvas.height ) {
       options.hitResponse.value = "miss";
       options.hitResponse.frames = 0;
-      options.hitResponse.count.miss++;
+      options.hitResponse.count.Miss++;
+      console.log(health);
+      health.value -= 10;
+      if (health.value <= 0) options.gameOver = 1;
       if (options.streak.value > options.streak.highest)
         options.streak.highest = options.streak.value;
       options.streak.value = 0;
@@ -169,7 +171,7 @@ class Components {
   }
 
   // only remove bad if it's past the user space
-  static bad(pos, key, canvas, options) {
+  static bad(pos, key, canvas, options, health) {
     let retVal = 0;
     if (key === "q" && options.qUp.value) {
       if (pos < canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*3))
@@ -190,7 +192,9 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "Bad";
       options.hitResponse.frames = 0;
-      options.hitResponse.count.bad++;
+      options.hitResponse.count.Bad++;
+      health.value -= 6;
+      if (health.value <= 0) options.gameOver = 1;
       if (options.streak.value > options.streak.highest)
         options.streak.highest = options.streak.value;
       options.streak.value = 0;
@@ -201,7 +205,7 @@ class Components {
 
   }
 
-  static good(pos, key, canvas, options) {
+  static good(pos, key, canvas, options, health) {
     let retVal = false;
     if (key === "q" && options.qUp.value) {
       // The bottom part of the component is touching the top part of user area
@@ -220,7 +224,8 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "good";
       options.hitResponse.frames = 0;
-      options.hitResponse.count.good++;
+      options.hitResponse.count.Good++;
+      health.value++;
       options.streak.value++;
       if (options.streak.value > options.streak.highest)
         options.streak.highest = options.streak.value;
@@ -229,7 +234,7 @@ class Components {
     return retVal;
   }
 
-  static great(pos, key, canvas, options) {
+  static great(pos, key, canvas, options, health) {
     let retVal = false;
     if (key === "q" && options.qUp.value) {
       if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*2)
@@ -247,7 +252,8 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "Great!";
       options.hitResponse.frames = 0;
-      options.hitResponse.count.great++;
+      options.hitResponse.count.Great++;
+      health.value++;
       options.streak.value++;
       if (options.streak.value > options.streak.highest)
         options.streak.highest = options.streak.value;
@@ -256,7 +262,7 @@ class Components {
     return retVal;
   }
 
-  static amazing(pos, key, canvas, options) {
+  static amazing(pos, key, canvas, options, health) {
     let retVal = false;
     if (key === "q" && options.qUp.value) {
       if (pos > canvas.height - HEIGHT_FROM_BOTTOM - (COMPONENT_RADIUS*1.3)
@@ -274,7 +280,8 @@ class Components {
     if (retVal) {
       options.hitResponse.value = "Amazing";
       options.hitResponse.frames = 0;
-      options.hitResponse.count.amazing++;
+      options.hitResponse.count.Amazing++;
+      health.value++;
       options.streak.value++;
       if (options.streak.value > options.streak.highest)
         options.streak.highest = options.streak.value;

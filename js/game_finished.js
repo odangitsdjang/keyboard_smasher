@@ -14,16 +14,7 @@ class GameFinished {
   }
 
   renderGameFinished() {
-    // if (this.gameFinished(this.options) && this.options.finishedGameFrame) {
-    if (true) {
-      // Score:
-      // Highest Streak:
-      // Amazing:
-      // Great:
-      // Good:
-      // Bad:
-      // Miss:
-      //
+    if (this.gameFinished(this.options) || this.options.gameOver) {
       const keys = Object.keys(this.options.hitResponse.count);
       if (this.options.finishedGameFrame < 30) {
         this.ctx.font = `${this.options.finishedGameFrame}px Arial`;
@@ -33,8 +24,14 @@ class GameFinished {
       this.ctx.fillStyle = "#000000";
       const heightInc = 45;
       let height =  (2*this.canvas.height/10);
+      const successOrGameOver = this.options.gameOver ? "Game Over!" : "Success!";
+      this.ctx.fillText(successOrGameOver,
+        this.canvas.width/2 - 100, height+=heightInc);
+      this.ctx.fillText(`Score: ${this.options.score}`,
+        this.canvas.width/2 - 100, height+=heightInc);
       this.ctx.fillText(`Longest Streak: ${this.options.streak.highest}`,
         this.canvas.width/2 - 100, height+=heightInc);
+
       keys.forEach(key =>  {
         this.ctx.fillText(`${key}: ${this.options.hitResponse.count[key]}`,
            this.canvas.width/2 - 100, height+=heightInc);
