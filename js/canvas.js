@@ -8,6 +8,7 @@ class Canvas {
   static draw(ctx, canvas, options, g) {
     let health = document.querySelector(".bar");
     if (!options.gameOver) {
+      console.log(options.songAudio.currentTime);
       OnClickUtil.handleKeyFrames(options);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       Components.drawScore(ctx, canvas, options);

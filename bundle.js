@@ -198,7 +198,7 @@ class Components {
   static drawHitResponse(ctx, canvas, options) {
     if (options.hitResponse.value) {
       if (options.hitResponse.frames <= 45) {
-        ctx.font = 50 - options.hitResponse.frames + "px Arial";
+        ctx.font = 50 - options.hitResponse.frames + "px Open Sans";
       } else if (options.hitResponse.frames > 45) {
         options.hitResponse.value = 0;
       }
@@ -214,15 +214,15 @@ class Components {
     // gradient.addColorStop("0.9","blue");
     // gradient.addColorStop("1.0","magenta");
     // ctx.fillStyle = gradient;
-    ctx.font = "22px Arial";
+    ctx.font = "22px Open Sans";
     ctx.fillStyle = "#000000";
-    ctx.fillText("Score: "+options.score, canvas.width-180, 40);
+    ctx.fillText("Score: "+options.score, canvas.width-180, 65);
   }
 
   static drawStreak(ctx, canvas, options) {
-    ctx.font = "22px Arial";
+    ctx.font = "22px Open Sans";
     ctx.fillStyle = "#000000";
-    ctx.fillText("Streak: "+options.streak.value, canvas.width-180, 80);
+    ctx.fillText("Streak: "+options.streak.value, canvas.width-180, 95);
   }
 
   static miss(pos, key, canvas, options, health) {
@@ -591,6 +591,7 @@ class Canvas {
   static draw(ctx, canvas, options, g) {
     let health = document.querySelector(".bar");
     if (!options.gameOver) {
+      console.log(options.songAudio.currentTime);
       __WEBPACK_IMPORTED_MODULE_1__onclicks__["a" /* default */].handleKeyFrames(options);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawScore(ctx, canvas, options);
@@ -648,6 +649,20 @@ class BeatMap {
       // subtract 2 : moving at 6 pixels, we want to achieve 740 pixels down
       // and at 60 hz, we can move 360 pixels down per second, so 2 seconds is
       // pretty close: 720 ~ 740
+
+      // break
+      for (let j = 0; j < this.break.length; j++) {
+        if  (this.break[j][0]-2 <= i && i <= this.break[j][1]-2) {
+          while (i <= this.break[j][1] - 2) {
+            current += this.measure;
+            i += this.measure;
+
+          }
+          continue;
+        }
+      }
+
+      // chorus
       for (let j = 0; j < this.chorus.length; j++) {
         if (this.chorus[j][0]-2 <= i && i <= this.chorus[j][1]-2) {
           retArr.push(current -2);
@@ -656,6 +671,7 @@ class BeatMap {
           continue;
         }
       }
+
       if (current-2 > 0)
         retArr.push(current-2);
 
@@ -668,7 +684,7 @@ class BeatMap {
     data.beatmaps["q"] = retArr.slice(0, retArr.length/3).sort((a,b)=>a-b);
     data.beatmaps["w"] = retArr.slice(retArr.length/3, 2*retArr.length/3).sort((a,b)=>a-b);
     data.beatmaps["e"] = retArr.slice(2 * retArr.length/3).sort((a,b)=>a-b);
-    // console.log(data);
+    console.log(data);
     return data;
   }
 
@@ -688,10 +704,10 @@ class BeatMap {
     if (tracknum === 1) {
       // const songLengthSeconds = this.options.songAudio.duration;
       // for some reason duration returns NaN (I guess it happens too fast)
-      this.songLengthSeconds = 235 - 4;  // subtract 4 to end beatmap 4 seconds earlier
-      this.chorus = [[68,90], [145, 167]];
+      this.songLengthSeconds = 230 - 2;  // subtract 2 to end beatmap 4 seconds earlier
+      this.chorus = [[68,90], [145, 167]];  // find the chorus manually from mp3
       this.bpm = 173.939;
-      this.break = [];
+      this.break = [[5,10]];
     }
     this.measure = this.increments(this.bpm);
   }
@@ -732,6 +748,8 @@ webpackEmptyContext.id = 6;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+const GAME_OVER_SOUND_LINK = "./songs/gameover.wav";
+
 class GameFinished {
   constructor(ctx, canvas, options) {
     this.options = options;
@@ -739,26 +757,40 @@ class GameFinished {
     this.ctx = ctx;
   }
 
-  gameFinished(options) {
-    if (options.songAudio.currentTime && options.songAudio.duration) {
-      if (options.songAudio.currentTime >= options.songAudio.duration - 2)
-        return true;
+  // gameOver: 2  means game won, gameOver: 1 means game lost
+  gameSuccess() {
+    if (this.options.songAudio.currentTime && this.options.songAudio.duration) {
+      if (this.options.songAudio.currentTime >= this.options.songAudio.duration - 2)
+        this.options.gameOver = 2;
     }
     return false;
   }
 
   renderGameFinished() {
-    if (this.gameFinished(this.options) || this.options.gameOver) {
+    if (this.gameSuccess() || this.options.gameOver) {
       const keys = Object.keys(this.options.hitResponse.count);
       if (this.options.finishedGameFrame < 30) {
-        this.ctx.font = `${this.options.finishedGameFrame}px Arial`;
+        this.ctx.font = `${this.options.finishedGameFrame}px Open Sans`;
       } else {
-          this.ctx.font = `30px Arial`;
+          this.ctx.font = `30px Open Sans`;
       }
       this.ctx.fillStyle = "#000000";
       const heightInc = 45;
       let height =  (2*this.canvas.height/10);
-      const successOrGameOver = this.options.gameOver ? "Game Over!" : "Success!";
+      const successOrGameOver = this.options.gameOver===1 ? "Game Over!" : "Success!";
+
+      if (this.options.finishedGameFrame === 0) {
+        this.options.songAudio.pause();
+        this.options.songAudio.currentTime = 0;
+        if (this.options.gameOver === 1) {
+          // only make this play once
+          this.options.songAudio = new Audio(GAME_OVER_SOUND_LINK);
+          this.options.songAudio.play();
+        } else {
+          // SUCCESS SONG WILL GO IN HERE
+        }
+      }
+
       this.ctx.fillText(successOrGameOver,
         this.canvas.width/2 - 100, height+=heightInc);
       this.ctx.fillText(`Score: ${this.options.score}`,

@@ -4,11 +4,12 @@
 * {
 	padding: 0;
 	margin: 0;
+	font-family: "Open Sans", sans-serif;
 }
 
 .description {
 	color: white;
-	top: -webkit-calc(50% - 300px);
+	top: -webkit-calc(50% - 351px);
 	left: -webkit-calc(50% + 330px);
 	width: 200px;
 }

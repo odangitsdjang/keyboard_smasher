@@ -127,7 +127,7 @@ class Components {
   static drawHitResponse(ctx, canvas, options) {
     if (options.hitResponse.value) {
       if (options.hitResponse.frames <= 45) {
-        ctx.font = 50 - options.hitResponse.frames + "px Arial";
+        ctx.font = 50 - options.hitResponse.frames + "px Open Sans";
       } else if (options.hitResponse.frames > 45) {
         options.hitResponse.value = 0;
       }
@@ -143,15 +143,15 @@ class Components {
     // gradient.addColorStop("0.9","blue");
     // gradient.addColorStop("1.0","magenta");
     // ctx.fillStyle = gradient;
-    ctx.font = "22px Arial";
+    ctx.font = "22px Open Sans";
     ctx.fillStyle = "#000000";
-    ctx.fillText("Score: "+options.score, canvas.width-180, 40);
+    ctx.fillText("Score: "+options.score, canvas.width-180, 65);
   }
 
   static drawStreak(ctx, canvas, options) {
-    ctx.font = "22px Arial";
+    ctx.font = "22px Open Sans";
     ctx.fillStyle = "#000000";
-    ctx.fillText("Streak: "+options.streak.value, canvas.width-180, 80);
+    ctx.fillText("Streak: "+options.streak.value, canvas.width-180, 95);
   }
 
   static miss(pos, key, canvas, options, health) {

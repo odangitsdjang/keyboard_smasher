@@ -23,6 +23,20 @@ class BeatMap {
       // subtract 2 : moving at 6 pixels, we want to achieve 740 pixels down
       // and at 60 hz, we can move 360 pixels down per second, so 2 seconds is
       // pretty close: 720 ~ 740
+
+      // break
+      for (let j = 0; j < this.break.length; j++) {
+        if  (this.break[j][0]-2 <= i && i <= this.break[j][1]-2) {
+          while (i <= this.break[j][1] - 2) {
+            current += this.measure;
+            i += this.measure;
+
+          }
+          continue;
+        }
+      }
+
+      // chorus
       for (let j = 0; j < this.chorus.length; j++) {
         if (this.chorus[j][0]-2 <= i && i <= this.chorus[j][1]-2) {
           retArr.push(current -2);
@@ -31,6 +45,7 @@ class BeatMap {
           continue;
         }
       }
+
       if (current-2 > 0)
         retArr.push(current-2);
 
@@ -43,7 +58,7 @@ class BeatMap {
     data.beatmaps["q"] = retArr.slice(0, retArr.length/3).sort((a,b)=>a-b);
     data.beatmaps["w"] = retArr.slice(retArr.length/3, 2*retArr.length/3).sort((a,b)=>a-b);
     data.beatmaps["e"] = retArr.slice(2 * retArr.length/3).sort((a,b)=>a-b);
-    // console.log(data);
+    console.log(data);
     return data;
   }
 
@@ -63,10 +78,10 @@ class BeatMap {
     if (tracknum === 1) {
       // const songLengthSeconds = this.options.songAudio.duration;
       // for some reason duration returns NaN (I guess it happens too fast)
-      this.songLengthSeconds = 235 - 4;  // subtract 4 to end beatmap 4 seconds earlier
-      this.chorus = [[68,90], [145, 167]];
+      this.songLengthSeconds = 230 - 2;  // subtract 2 to end beatmap 4 seconds earlier
+      this.chorus = [[68,90], [145, 167]];  // find the chorus manually from mp3
       this.bpm = 173.939;
-      this.break = [];
+      this.break = [[5,10]];
     }
     this.measure = this.increments(this.bpm);
   }

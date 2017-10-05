@@ -1,3 +1,5 @@
+const GAME_OVER_SOUND_LINK = "./songs/gameover.wav";
+
 class GameFinished {
   constructor(ctx, canvas, options) {
     this.options = options;
@@ -5,26 +7,40 @@ class GameFinished {
     this.ctx = ctx;
   }
 
-  gameFinished(options) {
-    if (options.songAudio.currentTime && options.songAudio.duration) {
-      if (options.songAudio.currentTime >= options.songAudio.duration - 2)
-        return true;
+  // gameOver: 2  means game won, gameOver: 1 means game lost
+  gameSuccess() {
+    if (this.options.songAudio.currentTime && this.options.songAudio.duration) {
+      if (this.options.songAudio.currentTime >= this.options.songAudio.duration - 2)
+        this.options.gameOver = 2;
     }
     return false;
   }
 
   renderGameFinished() {
-    if (this.gameFinished(this.options) || this.options.gameOver) {
+    if (this.gameSuccess() || this.options.gameOver) {
       const keys = Object.keys(this.options.hitResponse.count);
       if (this.options.finishedGameFrame < 30) {
-        this.ctx.font = `${this.options.finishedGameFrame}px Arial`;
+        this.ctx.font = `${this.options.finishedGameFrame}px Open Sans`;
       } else {
-          this.ctx.font = `30px Arial`;
+          this.ctx.font = `30px Open Sans`;
       }
       this.ctx.fillStyle = "#000000";
       const heightInc = 45;
       let height =  (2*this.canvas.height/10);
-      const successOrGameOver = this.options.gameOver ? "Game Over!" : "Success!";
+      const successOrGameOver = this.options.gameOver===1 ? "Game Over!" : "Success!";
+
+      if (this.options.finishedGameFrame === 0) {
+        this.options.songAudio.pause();
+        this.options.songAudio.currentTime = 0;
+        if (this.options.gameOver === 1) {
+          // only make this play once
+          this.options.songAudio = new Audio(GAME_OVER_SOUND_LINK);
+          this.options.songAudio.play();
+        } else {
+          // SUCCESS SONG WILL GO IN HERE
+        }
+      }
+
       this.ctx.fillText(successOrGameOver,
         this.canvas.width/2 - 100, height+=heightInc);
       this.ctx.fillText(`Score: ${this.options.score}`,
