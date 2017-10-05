@@ -1,4 +1,16 @@
-.health {
-  -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
+.health-bar {
+  margin: 2em auto;
+  height: 20px;
+  width: 500px;
+}
+
+.health-bar .bar {
+  border-radius:30%;
+  -webkit-transition: width .1s;
+  -moz-transition: width .1s;
+  transition: width .1s;
+  background: linear-gradient(rgb(0, 220, 0), rgb(0, 220, 0));
+  position: absolute;
+  height: 20px;
+  width: 500px;
 }

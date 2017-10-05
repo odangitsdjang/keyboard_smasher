@@ -229,7 +229,6 @@ class Components {
       options.hitResponse.value = "miss";
       options.hitResponse.frames = 0;
       options.hitResponse.count.Miss++;
-      console.log(health);
       health.value -= 10;
       if (health.value <= 0) options.gameOver = 1;
       if (options.streak.value > options.streak.highest)
