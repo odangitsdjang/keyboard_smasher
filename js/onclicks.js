@@ -13,8 +13,8 @@ class OnClickUtil {
     options.streakResponse = { value: 0, frames: 0, highest: 0 };
     options.finishedGameFrame = 0;
     options.gameOver = 0;
-    let health = document.getElementById("health");
-    health.value = 100;
+    let health = document.querySelector(".bar");
+    health.style.width = "500px";
   }
   static songLinks(ctx, canvas, options) {
 

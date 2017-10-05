@@ -1,16 +1,19 @@
 .health-bar {
-  margin: 2em auto;
+  border: 3px solid lightgrey;
+  position: fixed;
+  top: -webkit-calc(50% - 420px);
+  left: -webkit-calc(50% - 250px);
+  -webkit-transition: width .1s;
+  -moz-transition: width .1s;
+  transition: width .1s;
+  background: red;
   height: 20px;
   width: 500px;
 }
 
 .health-bar .bar {
-  border-radius:30%;
-  -webkit-transition: width .1s;
-  -moz-transition: width .1s;
-  transition: width .1s;
+  width:100%;
   background: linear-gradient(rgb(0, 220, 0), rgb(0, 220, 0));
-  position: absolute;
-  height: 20px;
   width: 500px;
+  height: 20px;
 }

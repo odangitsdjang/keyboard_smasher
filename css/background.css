@@ -5,6 +5,14 @@
 	padding: 0;
 	margin: 0;
 }
+
+.description {
+	color: white;
+	top: -webkit-calc(50% - 300px);
+	left: -webkit-calc(50% + 330px);
+	width: 200px;
+}
+
 canvas {
 	display: block;
 	margin: 0 auto;
@@ -92,26 +100,9 @@ OG:
 }
 
 
-h1 {
-	position: absolute;
-	top: 10px;
-	left: 10px;
-	z-index: 50;
-	font-size: 40px;
-}
 h2 {
-	position: absolute;
-	top: 70px;
-	left: 10px;
 	z-index: 50;
 	font-size: 20px;
-}
-h2 span {
-	font-size: 10px;
-}
-h1, h2 {
-	color: #fff;
-	text-shadow: 0px 1px 0px #999, 0px 2px 0px #888, 0px 3px 0px #777, 0px 4px 0px #666, 0px 5px 0px #555, 0px 6px 0px #444, 0px 7px 0px #333, 0px 8px 7px #001135;
 }
 div {
 	position: relative;

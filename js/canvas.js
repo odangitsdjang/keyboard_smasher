@@ -6,7 +6,7 @@ class Canvas {
   }
 
   static draw(ctx, canvas, options, g) {
-    let health = document.getElementById("health");
+    let health = document.querySelector(".bar");
     if (!options.gameOver) {
       OnClickUtil.handleKeyFrames(options);
       ctx.clearRect(0, 0, canvas.width, canvas.height);

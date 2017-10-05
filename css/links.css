@@ -1,6 +1,6 @@
 .links {
-  top: -webkit-calc(50% - 400px);
-  left: -webkit-calc(50% - 450px);
+  top: -webkit-calc(50% - 250px);
+  left: -webkit-calc(50% - 475px);  /* 452 to get it right next to the canvas*/
   display: flex;
   flex-direction: column;
 }

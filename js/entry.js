@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // w: [position, position],
     // e: [position, position, position]
     // }
+    const directions = document.getElementById("direction");
     const options = {
       songAudio: 0,
       beatMapData: 0,
@@ -35,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
       wUp: {value: false, frames:0 },
       eHeld: false,
       eUp: {value: false, frames:0 },
+      directions: directions
     };
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");

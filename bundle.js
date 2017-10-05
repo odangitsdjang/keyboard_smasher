@@ -77,6 +77,8 @@ const HEIGHT_FROM_BOTTOM = 60;
 const QCOLOR = "#AA00FF";
 const WCOLOR = "#00AAFF";
 const ECOLOR = "#FFAA00";
+// health.style.fontSize = "20px";
+// .style.width = "10px";
 // Make this class scalable so that if I want to change it later
 // then I can just change the numbers up at the top
 class Components {
@@ -96,6 +98,11 @@ class Components {
 
   static addGameComponents(ctx, canvas, options) {
     if (options.songAudio.currentTime) {
+      if (options.songAudio.currentTime > 3 && options.songAudio.currentTime < 5) {
+        options.directions.style.color = "rgb(150,150,150)";
+      } else if (options.songAudio.currentTime > 5) {
+        options.directions.style.color = "rgb(50,50,50)";
+      }
       Object.keys(options.beatMapData.beatmaps).forEach(key => {
         options.beatMapData.beatmaps[key].forEach( secondVal => {
           if (secondVal >= options.songAudio.currentTime &&
@@ -190,14 +197,8 @@ class Components {
 
   static drawHitResponse(ctx, canvas, options) {
     if (options.hitResponse.value) {
-      if (options.hitResponse.frames < 10) {
-        ctx.font = "50px Arial";
-      } else if (options.hitResponse.frames < 15) {
-        ctx.font = "40px Arial";
-      } else if (options.hitResponse.frames < 27) {
-        ctx.font = "35px Arial";
-      } else if (options.hitResponse.frames < 30) {
-        ctx.font = "30px Arial";
+      if (options.hitResponse.frames <= 45) {
+        ctx.font = 50 - options.hitResponse.frames + "px Arial";
       } else if (options.hitResponse.frames > 45) {
         options.hitResponse.value = 0;
       }
@@ -229,8 +230,11 @@ class Components {
       options.hitResponse.value = "miss";
       options.hitResponse.frames = 0;
       options.hitResponse.count.Miss++;
-      health.value -= 10;
-      if (health.value <= 0) options.gameOver = 1;
+      let healthVal = parseInt(window.getComputedStyle(health).width);
+      healthVal -= 50;
+      healthVal = healthVal < 0 ? 0 : healthVal ;
+      if (healthVal <= 0) options.gameOver = 1;
+      health.style.width = healthVal+'px';
       if (options.streak.value > options.streak.highest)
         options.streak.highest = options.streak.value;
       options.streak.value = 0;
@@ -263,8 +267,11 @@ class Components {
       options.hitResponse.value = "Bad";
       options.hitResponse.frames = 0;
       options.hitResponse.count.Bad++;
-      health.value -= 6;
-      if (health.value <= 0) options.gameOver = 1;
+      let healthVal = parseInt(window.getComputedStyle(health).width);
+      healthVal -= 30;
+      healthVal = healthVal < 0 ? 0 : healthVal ;
+      if (healthVal <= 0) options.gameOver = 1;
+      health.style.width = healthVal+'px';
       if (options.streak.value > options.streak.highest)
         options.streak.highest = options.streak.value;
       options.streak.value = 0;
@@ -292,10 +299,13 @@ class Components {
         retVal = true;
     }
     if (retVal) {
-      options.hitResponse.value = "good";
+      options.hitResponse.value = "Good";
       options.hitResponse.frames = 0;
       options.hitResponse.count.Good++;
-      health.value++;
+      let healthVal = parseInt(window.getComputedStyle(health).width);
+      healthVal += 10;
+      healthVal = healthVal >= 500 ? 500 : healthVal;
+      health.style.width = healthVal+'px';
       options.streak.value++;
       if (options.streak.value > options.streak.highest)
         options.streak.highest = options.streak.value;
@@ -323,7 +333,10 @@ class Components {
       options.hitResponse.value = "Great!";
       options.hitResponse.frames = 0;
       options.hitResponse.count.Great++;
-      health.value++;
+      let healthVal = parseInt(window.getComputedStyle(health).width);
+      healthVal += 15;
+      healthVal = healthVal >= 500 ? 500 : healthVal;
+      health.style.width = healthVal+'px';
       options.streak.value++;
       if (options.streak.value > options.streak.highest)
         options.streak.highest = options.streak.value;
@@ -348,10 +361,13 @@ class Components {
         retVal = true;
     }
     if (retVal) {
-      options.hitResponse.value = "Amazing";
+      options.hitResponse.value = "Amazing!!";
       options.hitResponse.frames = 0;
       options.hitResponse.count.Amazing++;
-      health.value++;
+      let healthVal = parseInt(window.getComputedStyle(health).width);
+      healthVal += 20;
+      healthVal = healthVal >= 500 ? 500 : healthVal;
+      health.style.width = healthVal+'px';
       options.streak.value++;
       if (options.streak.value > options.streak.highest)
         options.streak.highest = options.streak.value;
@@ -385,8 +401,8 @@ class OnClickUtil {
     options.streakResponse = { value: 0, frames: 0, highest: 0 };
     options.finishedGameFrame = 0;
     options.gameOver = 0;
-    let health = document.getElementById("health");
-    health.value = 100;
+    let health = document.querySelector(".bar");
+    health.style.width = "500px";
   }
   static songLinks(ctx, canvas, options) {
 
@@ -517,6 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // w: [position, position],
     // e: [position, position, position]
     // }
+    const directions = document.getElementById("direction");
     const options = {
       songAudio: 0,
       beatMapData: 0,
@@ -537,6 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
       wUp: {value: false, frames:0 },
       eHeld: false,
       eUp: {value: false, frames:0 },
+      directions: directions
     };
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
@@ -571,7 +589,7 @@ class Canvas {
   }
 
   static draw(ctx, canvas, options, g) {
-    let health = document.getElementById("health");
+    let health = document.querySelector(".bar");
     if (!options.gameOver) {
       __WEBPACK_IMPORTED_MODULE_1__onclicks__["a" /* default */].handleKeyFrames(options);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
