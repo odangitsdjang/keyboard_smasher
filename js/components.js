@@ -2,7 +2,7 @@ import { INTERVAL_MILLISECOND } from './entry';
 import { GAME_SPEED } from '../game/beatmap';
 const COMPONENT_RADIUS = 30;
 const COMPONENT_COUNT = 3;
-const GAME_COMPONENT_SPEED = 9;
+const GAME_COMPONENT_SPEED = 8.5;
 const HEIGHT_FROM_BOTTOM = 60;
 const QCOLOR = "#AA00FF";
 const WCOLOR = "#00AAFF";

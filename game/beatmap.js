@@ -30,7 +30,7 @@ class BeatMap {
     const retArr = [];
     let i = 0;
     while (i < this.songLengthSeconds) {
-      // subtract 2 : moving at 9 pixels, we want to achieve 540 pixels down
+      // subtract 1 : moving at 9 pixels, we want to achieve 540 - (RADIUS:30) pixels down
       // and at 60 hz, we can move 540 pixels down per second, so
       // that's why we have a 1 second offset
       let triggered = false;
@@ -96,7 +96,7 @@ class BeatMap {
       this.bpm = 194;
       this.break = [[0,11.7]];
       // this.quad = [[20.79, 21.5], [49.5,50.5], [197.8,198.8]];
-      this.options.speed = 9;
+      this.options.speed = 8.5;
       this.options.songName = "Run Me Dry";
       this.measure = this.increments(this.bpm, 0.5);
     } else if (tracknum === 2) {
@@ -104,7 +104,7 @@ class BeatMap {
       this.chorus = [[68,90], [145, 167], [189, 195]];  // find the chorus manually from mp3
       this.bpm = 173.939;
       this.break = [[5,10]];
-      this.options.speed = 9;
+      this.options.speed = 8.5;
       this.options.songName = "Immortality";
       this.measure = this.increments(this.bpm);
     } else if (tracknum === 3) {
@@ -113,7 +113,7 @@ class BeatMap {
       this.bpm = 156;
       this.options.songName = "Limitless";
       this.break = [[5,10]];
-      this.options.speed = 18;
+      this.options.speed = 17;
       this.measure = this.increments(this.bpm, 2);
 
     }
