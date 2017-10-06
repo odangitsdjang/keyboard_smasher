@@ -8,10 +8,13 @@ class BeatMap {
     this.options = options;
     this.ctx = ctx;
     // check the start of the songname the get the right beatmap
+    // careful changing the folder name, because then this will break!!!
     if (songLink[8] === "C") {
-      this.song = 1;
-    } else if (songLink[8] === "S") {
       this.song = 2;
+    } else if (songLink[8] === "S") {
+      this.song = 3;
+    } else if (songLink[8] === "B") {
+      this.song = 1;
     }
   }
   // Given the bpm get an array of seconds where there is a new measure
@@ -84,14 +87,22 @@ class BeatMap {
     if (tracknum === 1) {
       // const songLengthSeconds = this.options.songAudio.duration;
       // for some reason duration returns NaN (I guess it happens too fast)
-      this.songLengthSeconds = 230 - 1;  // subtract 1 to end beatmap 3 seconds earlier
+      this.songLengthSeconds = 170 - 1;  // subtract 1 to end beatmap 3 seconds earlier
+      this.chorus = [[68,90], [145, 167], [189, 195]];  // find the chorus manually from mp3
+      this.bpm = 194;
+      this.break = [[0,10]];
+      this.options.speed = 9;
+      this.options.songName = "Run Me Dry";
+      this.measure = this.increments(this.bpm, 0.5);
+    } else if (tracknum === 2) {
+      this.songLengthSeconds = 232 - 1;  // subtract 1 to end beatmap 3 seconds earlier
       this.chorus = [[68,90], [145, 167], [189, 195]];  // find the chorus manually from mp3
       this.bpm = 173.939;
       this.break = [[5,10]];
       this.options.speed = 9;
       this.options.songName = "Immortality";
       this.measure = this.increments(this.bpm);
-    } else if (tracknum === 2) {
+    } else if (tracknum === 3) {
       this.songLengthSeconds = 211 - 1;
       // this.chorus = [[68,90], [145, 167]];
       this.bpm = 156;
@@ -100,6 +111,7 @@ class BeatMap {
       this.break = [[5,10]];
       this.options.speed = 18;
       this.measure = this.increments(this.bpm, 2);
+
     }
   }
 
