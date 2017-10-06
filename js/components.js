@@ -1,4 +1,5 @@
-import {INTERVAL_MILLISECOND} from './entry';
+import { INTERVAL_MILLISECOND } from './entry';
+import { GAME_SPEED } from '../game/beatmap';
 const COMPONENT_RADIUS = 30;
 const COMPONENT_COUNT = 3;
 const GAME_COMPONENT_SPEED = 9;
@@ -74,7 +75,7 @@ class Components {
     Object.keys(options.activeComponents).forEach(key=> {
       options.activeComponents[key].forEach((pos,i)=> {
 
-        options.activeComponents[key][i] += GAME_COMPONENT_SPEED;
+        options.activeComponents[key][i] += options.speed;
         let loc = 0;
         if (key === "q") {
           ctx.fillStyle = QCOLOR;
@@ -160,7 +161,7 @@ class Components {
       options.hitResponse.frames = 0;
       options.hitResponse.count.Miss++;
       let healthVal = parseInt(window.getComputedStyle(health).width);
-      healthVal -= 50;
+      healthVal -= 40;
       healthVal = healthVal < 0 ? 0 : healthVal ;
       if (healthVal <= 0) options.gameOver = 1;
       health.style.width = healthVal+'px';

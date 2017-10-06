@@ -1,16 +1,22 @@
 import Components from '../js/components';
 import OnClickUtil from '../js/onclicks';
 const beatmap1 = require('../songs/Cartoon-Immortality.json');
-const OFFSET_TO_HIT_USER_AREA = 1;
+let OFFSET_TO_HIT_USER_AREA = 1;
 // this class still needs work to allow multiple songs
 class BeatMap {
-  constructor(options, ctx) {
+  constructor(options, ctx, songLink) {
     this.options = options;
     this.ctx = ctx;
+    // check the start of the songname the get the right beatmap
+    if (songLink[8] === "C") {
+      this.song = 1;
+    } else if (songLink[8] === "S") {
+      this.song = 2;
+    }
   }
   // Given the bpm get an array of seconds where there is a new measure
-  increments(bpm) {
-    return  (1 / (bpm/60));
+  increments(bpm, speed=1) {
+    return  (1 / (bpm/60)) / speed;
   }
 
   // chorus section = [[begin, end], [begin, end]]
@@ -36,7 +42,7 @@ class BeatMap {
         }
       }
 
-      // chorus
+      // hook
       for (let j = 0; j < this.chorus.length; j++) {
         if (this.chorus[j][0]-OFFSET_TO_HIT_USER_AREA <= i && i <= this.chorus[j][1]-OFFSET_TO_HIT_USER_AREA) {
           retArr.push(current -OFFSET_TO_HIT_USER_AREA);
@@ -58,12 +64,13 @@ class BeatMap {
     data.beatmaps["q"] = retArr.slice(0, retArr.length/3).sort((a,b)=>a-b);
     data.beatmaps["w"] = retArr.slice(retArr.length/3, 2*retArr.length/3).sort((a,b)=>a-b);
     data.beatmaps["e"] = retArr.slice(2 * retArr.length/3).sort((a,b)=>a-b);
+    // console.log(data);
     return data;
   }
 
   play() {
     // OnClickUtil.resetSongPoints(this.options, this.ctx);
-    this.options.beatMapData = this.makeBeatMap(1);
+    this.options.beatMapData = this.makeBeatMap(this.song);
   }
 
   shuffle(arr) {
@@ -77,12 +84,23 @@ class BeatMap {
     if (tracknum === 1) {
       // const songLengthSeconds = this.options.songAudio.duration;
       // for some reason duration returns NaN (I guess it happens too fast)
-      this.songLengthSeconds = 230 - 1;  // subtract 2 to end beatmap 4 seconds earlier
-      this.chorus = [[68,90], [145, 167]];  // find the chorus manually from mp3
+      this.songLengthSeconds = 230 - 1;  // subtract 1 to end beatmap 3 seconds earlier
+      this.chorus = [[68,90], [145, 167], [189, 195]];  // find the chorus manually from mp3
       this.bpm = 173.939;
       this.break = [[5,10]];
+      this.options.speed = 9;
+      this.options.songName = "Immortality";
+      this.measure = this.increments(this.bpm);
+    } else if (tracknum === 2) {
+      this.songLengthSeconds = 211 - 1;
+      // this.chorus = [[68,90], [145, 167]];
+      this.bpm = 156;
+      this.options.songName = "Limitless";
+      this.chorus = [];
+      this.break = [[5,10]];
+      this.options.speed = 18;
+      this.measure = this.increments(this.bpm, 2);
     }
-    this.measure = this.increments(this.bpm);
   }
 
   // this function doesn't work because you cannot dynamically require files in javascript..

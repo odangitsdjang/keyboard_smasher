@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // }
     const directions = document.getElementById("direction");
     const options = {
+      songName: "",
       songAudio: 0,
       beatMapData: 0,
       activeComponents: {
@@ -28,8 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
       hitResponse: { value: "", frames: 0, count: {Amazing: 0, Great: 0, Good: 0, Bad: 0, Miss: 0 }},
       streak: { value: 0, highest: 0 },
       finishedGameFrame: 0,
+      speed: 9,
       gameOver: 0,
-      gameSuccess: 0,
       userAreaResponse: { frames: 0 },
       qHeld: false,
       qUp: {value: false, frames:0 },
