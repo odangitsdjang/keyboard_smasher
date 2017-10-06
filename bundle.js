@@ -684,7 +684,6 @@ class BeatMap {
     data.beatmaps["q"] = retArr.slice(0, retArr.length/3).sort((a,b)=>a-b);
     data.beatmaps["w"] = retArr.slice(retArr.length/3, 2*retArr.length/3).sort((a,b)=>a-b);
     data.beatmaps["e"] = retArr.slice(2 * retArr.length/3).sort((a,b)=>a-b);
-    console.log(data);
     return data;
   }
 
