@@ -1,19 +1,19 @@
 .health-bar {
   border: 3px solid rgb(50,50,50);
   position: fixed;
-  top: -webkit-calc(50% - 390px);
-  left: -webkit-calc(50% - 250px);
+  top: -webkit-calc(50% - 290px);
+  left: -webkit-calc(50% - 200px);
   -webkit-transition: width .1s;
   -moz-transition: width .1s;
   transition: width .1s;
   background: red;
   height: 20px;
-  width: 500px;
+  width: 400px;
 }
 
 .health-bar .bar {
   width:100%;
   background: linear-gradient(rgb(0, 220, 0), rgb(0, 220, 0));
-  width: 500px;
+  width: 400px;
   height: 20px;
 }

@@ -72,7 +72,7 @@
 
 const COMPONENT_RADIUS = 30;
 const COMPONENT_COUNT = 3;
-const GAME_COMPONENT_SPEED = 6;
+const GAME_COMPONENT_SPEED = 9;
 const HEIGHT_FROM_BOTTOM = 60;
 const QCOLOR = "#AA00FF";
 const WCOLOR = "#00AAFF";
@@ -200,7 +200,7 @@ class Components {
       if (options.hitResponse.frames <= 45) {
         ctx.font = 50 - options.hitResponse.frames + "px Open Sans";
       } else if (options.hitResponse.frames > 45) {
-        options.hitResponse.value = 0;
+        options.hitResponse.value = "";
       }
       options.hitResponse.frames++;
       ctx.fillStyle = "#000000";
@@ -304,7 +304,7 @@ class Components {
       options.hitResponse.count.Good++;
       let healthVal = parseInt(window.getComputedStyle(health).width);
       healthVal += 10;
-      healthVal = healthVal >= 500 ? 500 : healthVal;
+      healthVal = healthVal >= 400 ? 400 : healthVal;
       health.style.width = healthVal+'px';
       options.streak.value++;
       if (options.streak.value > options.streak.highest)
@@ -335,7 +335,7 @@ class Components {
       options.hitResponse.count.Great++;
       let healthVal = parseInt(window.getComputedStyle(health).width);
       healthVal += 15;
-      healthVal = healthVal >= 500 ? 500 : healthVal;
+      healthVal = healthVal >= 400 ? 400 : healthVal;
       health.style.width = healthVal+'px';
       options.streak.value++;
       if (options.streak.value > options.streak.highest)
@@ -366,7 +366,7 @@ class Components {
       options.hitResponse.count.Amazing++;
       let healthVal = parseInt(window.getComputedStyle(health).width);
       healthVal += 20;
-      healthVal = healthVal >= 500 ? 500 : healthVal;
+      healthVal = healthVal >= 400 ? 400 : healthVal;
       health.style.width = healthVal+'px';
       options.streak.value++;
       if (options.streak.value > options.streak.highest)
@@ -397,12 +397,12 @@ class OnClickUtil {
       w: [],
       e: []
     };
-    options.hitResponse = { value: 0, frames: 0, count: {Amazing: 0, Great: 0, Good: 0, Bad: 0, Miss: 0 } };
+    options.hitResponse = { value: "", frames: 0, count: {Amazing: 0, Great: 0, Good: 0, Bad: 0, Miss: 0 } };
     options.streakResponse = { value: 0, frames: 0, highest: 0 };
     options.finishedGameFrame = 0;
     options.gameOver = 0;
     let health = document.querySelector(".bar");
-    health.style.width = "500px";
+    health.style.width = "400px";
   }
   static songLinks(ctx, canvas, options) {
 
@@ -543,10 +543,11 @@ document.addEventListener('DOMContentLoaded', () => {
         e: []
       },
       score: 0,
-      hitResponse: { value: 0, frames: 0, count: {Amazing: 0, Great: 0, Good: 0, Bad: 0, Miss: 0 }},
+      hitResponse: { value: "", frames: 0, count: {Amazing: 0, Great: 0, Good: 0, Bad: 0, Miss: 0 }},
       streak: { value: 0, highest: 0 },
       finishedGameFrame: 0,
       gameOver: 0,
+      gameSuccess: 0,
       userAreaResponse: { frames: 0 },
       qHeld: false,
       qUp: {value: false, frames:0 },
@@ -591,7 +592,6 @@ class Canvas {
   static draw(ctx, canvas, options, g) {
     let health = document.querySelector(".bar");
     if (!options.gameOver) {
-      console.log(options.songAudio.currentTime);
       __WEBPACK_IMPORTED_MODULE_1__onclicks__["a" /* default */].handleKeyFrames(options);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawScore(ctx, canvas, options);
@@ -627,7 +627,7 @@ class Canvas {
 
 
 const beatmap1 = __webpack_require__(5);
-
+const OFFSET_TO_HIT_USER_AREA = 1;
 // this class still needs work to allow multiple songs
 class BeatMap {
   constructor(options, ctx) {
@@ -646,14 +646,14 @@ class BeatMap {
     const retArr = [];
     let i = 0;
     while (i < this.songLengthSeconds) {
-      // subtract 2 : moving at 6 pixels, we want to achieve 740 pixels down
-      // and at 60 hz, we can move 360 pixels down per second, so 2 seconds is
-      // pretty close: 720 ~ 740
+      // subtract 2 : moving at 9 pixels, we want to achieve 540 pixels down
+      // and at 60 hz, we can move 540 pixels down per second, so
+      // that's why we have a 1 second offset
 
       // break
       for (let j = 0; j < this.break.length; j++) {
-        if  (this.break[j][0]-2 <= i && i <= this.break[j][1]-2) {
-          while (i <= this.break[j][1] - 2) {
+        if  (this.break[j][0]-OFFSET_TO_HIT_USER_AREA <= i && i <= this.break[j][1]-OFFSET_TO_HIT_USER_AREA) {
+          while (i <= this.break[j][1] - OFFSET_TO_HIT_USER_AREA) {
             current += this.measure;
             i += this.measure;
 
@@ -664,8 +664,8 @@ class BeatMap {
 
       // chorus
       for (let j = 0; j < this.chorus.length; j++) {
-        if (this.chorus[j][0]-2 <= i && i <= this.chorus[j][1]-2) {
-          retArr.push(current -2);
+        if (this.chorus[j][0]-OFFSET_TO_HIT_USER_AREA <= i && i <= this.chorus[j][1]-OFFSET_TO_HIT_USER_AREA) {
+          retArr.push(current -OFFSET_TO_HIT_USER_AREA);
           current += this.measure/2;
           i += this.measure/2;
           continue;
@@ -673,7 +673,7 @@ class BeatMap {
       }
 
       if (current-2 > 0)
-        retArr.push(current-2);
+        retArr.push(current-OFFSET_TO_HIT_USER_AREA);
 
       current += this.measure;
       i+= this.measure;
@@ -704,7 +704,7 @@ class BeatMap {
     if (tracknum === 1) {
       // const songLengthSeconds = this.options.songAudio.duration;
       // for some reason duration returns NaN (I guess it happens too fast)
-      this.songLengthSeconds = 230 - 2;  // subtract 2 to end beatmap 4 seconds earlier
+      this.songLengthSeconds = 230 - 1;  // subtract 2 to end beatmap 4 seconds earlier
       this.chorus = [[68,90], [145, 167]];  // find the chorus manually from mp3
       this.bpm = 173.939;
       this.break = [[5,10]];
@@ -757,11 +757,10 @@ class GameFinished {
     this.ctx = ctx;
   }
 
-  // gameOver: 2  means game won, gameOver: 1 means game lost
   gameSuccess() {
     if (this.options.songAudio.currentTime && this.options.songAudio.duration) {
       if (this.options.songAudio.currentTime >= this.options.songAudio.duration - 2)
-        this.options.gameOver = 2;
+        return true;
     }
     return false;
   }
@@ -777,12 +776,12 @@ class GameFinished {
       this.ctx.fillStyle = "#000000";
       const heightInc = 45;
       let height =  (2*this.canvas.height/10);
-      const successOrGameOver = this.options.gameOver===1 ? "Game Over!" : "Success!";
+      const successOrGameOver = this.options.gameOver ? "Game Over!" : "Success!";
 
       if (this.options.finishedGameFrame === 0) {
         this.options.songAudio.pause();
         this.options.songAudio.currentTime = 0;
-        if (this.options.gameOver === 1) {
+        if (this.options.gameOver) {
           // only make this play once
           this.options.songAudio = new Audio(GAME_OVER_SOUND_LINK);
           this.options.songAudio.play();

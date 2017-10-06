@@ -1,7 +1,7 @@
 import Components from '../js/components';
 import OnClickUtil from '../js/onclicks';
 const beatmap1 = require('../songs/Cartoon-Immortality.json');
-
+const OFFSET_TO_HIT_USER_AREA = 1;
 // this class still needs work to allow multiple songs
 class BeatMap {
   constructor(options, ctx) {
@@ -20,14 +20,14 @@ class BeatMap {
     const retArr = [];
     let i = 0;
     while (i < this.songLengthSeconds) {
-      // subtract 2 : moving at 6 pixels, we want to achieve 740 pixels down
-      // and at 60 hz, we can move 360 pixels down per second, so 2 seconds is
-      // pretty close: 720 ~ 740
+      // subtract 2 : moving at 9 pixels, we want to achieve 540 pixels down
+      // and at 60 hz, we can move 540 pixels down per second, so
+      // that's why we have a 1 second offset
 
       // break
       for (let j = 0; j < this.break.length; j++) {
-        if  (this.break[j][0]-2 <= i && i <= this.break[j][1]-2) {
-          while (i <= this.break[j][1] - 2) {
+        if  (this.break[j][0]-OFFSET_TO_HIT_USER_AREA <= i && i <= this.break[j][1]-OFFSET_TO_HIT_USER_AREA) {
+          while (i <= this.break[j][1] - OFFSET_TO_HIT_USER_AREA) {
             current += this.measure;
             i += this.measure;
 
@@ -38,8 +38,8 @@ class BeatMap {
 
       // chorus
       for (let j = 0; j < this.chorus.length; j++) {
-        if (this.chorus[j][0]-2 <= i && i <= this.chorus[j][1]-2) {
-          retArr.push(current -2);
+        if (this.chorus[j][0]-OFFSET_TO_HIT_USER_AREA <= i && i <= this.chorus[j][1]-OFFSET_TO_HIT_USER_AREA) {
+          retArr.push(current -OFFSET_TO_HIT_USER_AREA);
           current += this.measure/2;
           i += this.measure/2;
           continue;
@@ -47,7 +47,7 @@ class BeatMap {
       }
 
       if (current-2 > 0)
-        retArr.push(current-2);
+        retArr.push(current-OFFSET_TO_HIT_USER_AREA);
 
       current += this.measure;
       i+= this.measure;
@@ -78,7 +78,7 @@ class BeatMap {
     if (tracknum === 1) {
       // const songLengthSeconds = this.options.songAudio.duration;
       // for some reason duration returns NaN (I guess it happens too fast)
-      this.songLengthSeconds = 230 - 2;  // subtract 2 to end beatmap 4 seconds earlier
+      this.songLengthSeconds = 230 - 1;  // subtract 2 to end beatmap 4 seconds earlier
       this.chorus = [[68,90], [145, 167]];  // find the chorus manually from mp3
       this.bpm = 173.939;
       this.break = [[5,10]];

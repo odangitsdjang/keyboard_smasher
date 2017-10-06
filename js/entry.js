@@ -25,10 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
         e: []
       },
       score: 0,
-      hitResponse: { value: 0, frames: 0, count: {Amazing: 0, Great: 0, Good: 0, Bad: 0, Miss: 0 }},
+      hitResponse: { value: "", frames: 0, count: {Amazing: 0, Great: 0, Good: 0, Bad: 0, Miss: 0 }},
       streak: { value: 0, highest: 0 },
       finishedGameFrame: 0,
       gameOver: 0,
+      gameSuccess: 0,
       userAreaResponse: { frames: 0 },
       qHeld: false,
       qUp: {value: false, frames:0 },

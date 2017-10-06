@@ -1,7 +1,7 @@
 import {INTERVAL_MILLISECOND} from './entry';
 const COMPONENT_RADIUS = 30;
 const COMPONENT_COUNT = 3;
-const GAME_COMPONENT_SPEED = 6;
+const GAME_COMPONENT_SPEED = 9;
 const HEIGHT_FROM_BOTTOM = 60;
 const QCOLOR = "#AA00FF";
 const WCOLOR = "#00AAFF";
@@ -129,7 +129,7 @@ class Components {
       if (options.hitResponse.frames <= 45) {
         ctx.font = 50 - options.hitResponse.frames + "px Open Sans";
       } else if (options.hitResponse.frames > 45) {
-        options.hitResponse.value = 0;
+        options.hitResponse.value = "";
       }
       options.hitResponse.frames++;
       ctx.fillStyle = "#000000";
@@ -233,7 +233,7 @@ class Components {
       options.hitResponse.count.Good++;
       let healthVal = parseInt(window.getComputedStyle(health).width);
       healthVal += 10;
-      healthVal = healthVal >= 500 ? 500 : healthVal;
+      healthVal = healthVal >= 400 ? 400 : healthVal;
       health.style.width = healthVal+'px';
       options.streak.value++;
       if (options.streak.value > options.streak.highest)
@@ -264,7 +264,7 @@ class Components {
       options.hitResponse.count.Great++;
       let healthVal = parseInt(window.getComputedStyle(health).width);
       healthVal += 15;
-      healthVal = healthVal >= 500 ? 500 : healthVal;
+      healthVal = healthVal >= 400 ? 400 : healthVal;
       health.style.width = healthVal+'px';
       options.streak.value++;
       if (options.streak.value > options.streak.highest)
@@ -295,7 +295,7 @@ class Components {
       options.hitResponse.count.Amazing++;
       let healthVal = parseInt(window.getComputedStyle(health).width);
       healthVal += 20;
-      healthVal = healthVal >= 500 ? 500 : healthVal;
+      healthVal = healthVal >= 400 ? 400 : healthVal;
       health.style.width = healthVal+'px';
       options.streak.value++;
       if (options.streak.value > options.streak.highest)
