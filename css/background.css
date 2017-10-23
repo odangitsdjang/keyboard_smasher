@@ -9,7 +9,7 @@
 
 .description {
 	color: white;
-	top: -webkit-calc(50% - 351px);
+	top: -webkit-calc(50% - 430px);
 	left: -webkit-calc(50% + 330px);
 	width: 200px;
 }
@@ -31,7 +31,14 @@ html, body {
 	margin: 0;
 }
 body {
-  background-color: rgb(50,50,50);
+	background-image: url('../docs/background.jpg');
+	height: 100%;
+	/* Center and scale the image nicely */
+
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+  /* background-color: rgb(50,50,50); */
 }
 /*#bc0986
 OG:

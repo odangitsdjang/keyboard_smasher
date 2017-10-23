@@ -69,7 +69,7 @@
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__entry__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__game_beatmap__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__game_beatmap__ = __webpack_require__(3);
 
 
 const COMPONENT_RADIUS = 30;
@@ -387,7 +387,7 @@ class Components {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__game_beatmap__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__game_beatmap__ = __webpack_require__(3);
 
 class OnClickUtil {
 
@@ -500,6 +500,18 @@ class OnClickUtil {
   static addAllLinks(ctx, canvas, options) {
     OnClickUtil.songLinks(ctx, canvas, options);
     OnClickUtil.keyPressedLinks(options);
+    OnClickUtil.closeInitialModal();
+  }
+
+  // This is for the instructions in the beginning
+  static closeInitialModal() {
+    const modal = document.querySelector('.modal');
+
+    window.onclick = function(event) {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    };
   }
 }
 
@@ -513,9 +525,10 @@ class OnClickUtil {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__canvas__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__canvas__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__onclicks__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__game_finished__ = __webpack_require__(7);
+
 
 
 
@@ -583,53 +596,11 @@ document.addEventListener('DOMContentLoaded', () => {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__onclicks__ = __webpack_require__(1);
-
-
-class Canvas {
-  static drawHealthBar() {
-
-  }
-
-  static draw(ctx, canvas, options, g) {
-    let health = document.querySelector(".bar");
-    if (!options.gameOver) {
-      __WEBPACK_IMPORTED_MODULE_1__onclicks__["a" /* default */].handleKeyFrames(options);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawScore(ctx, canvas, options);
-      __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawStreak(ctx, canvas, options);
-      __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawHitResponse(ctx, canvas, options);
-      __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].renderGameComponents(ctx, canvas, options, health);
-      __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawUserComponents(ctx, canvas, options);
-    } else {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-    g.renderGameFinished();
-    requestAnimationFrame(e=>{
-      Canvas.draw(ctx, canvas, options, g);
-    });
-
-  }
-
-
-
-}
-
-
-/* harmony default export */ __webpack_exports__["a"] = (Canvas);
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__js_components__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_onclicks__ = __webpack_require__(1);
 
 
-const beatmap1 = __webpack_require__(5);
+const beatmap1 = __webpack_require__(4);
 let OFFSET_TO_HIT_USER_AREA = 1;
 // this class still needs work to allow multiple songs
 class BeatMap {
@@ -762,13 +733,13 @@ class BeatMap {
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 module.exports = {"bpm":"173.939","beatmaps":{"q":[1,1.1,1.3,2.2,2.371439,3.3,3.5,3.7,3.9,4,4.1,4.4,5.5,6.6],"w":[1.25,1.35,1.45,1.55,1.65,2.3772],"e":[0.10453664790530048,0.4494851643392228,0.7944336807731451,1.139382197207067,1.484330713640989,1.8292792300749108,2.1742277465088327,2.5191762629427545,2.8641247793766764,3.2090732958105983,3.55402181224452,3.898970328678442,4.243918845112364,4.588867361546286,4.933815877980208,5.2787643944141305,5.623712910848052,5.968661427281974,6.313609943715896,6.658558460149818,7.00350697658374,7.348455493017662,7.693404009451584,8.038352525885506,8.383301042319427,8.72824955875335,9.073198075187271,9.418146591621193,9.763095108055115,10.108043624489037,10.452992140922959,10.79794065735688,11.142889173790802,11.487837690224724,11.832786206658646,12.177734723092568,12.52268323952649,12.867631755960412,13.212580272394334]}}
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports) {
 
 function webpackEmptyContext(req) {
@@ -777,7 +748,49 @@ function webpackEmptyContext(req) {
 webpackEmptyContext.keys = function() { return []; };
 webpackEmptyContext.resolve = webpackEmptyContext;
 module.exports = webpackEmptyContext;
-webpackEmptyContext.id = 6;
+webpackEmptyContext.id = 5;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__onclicks__ = __webpack_require__(1);
+
+
+class Canvas {
+  static drawHealthBar() {
+
+  }
+
+  static draw(ctx, canvas, options, g) {
+    let health = document.querySelector(".bar");
+    if (!options.gameOver) {
+      __WEBPACK_IMPORTED_MODULE_1__onclicks__["a" /* default */].handleKeyFrames(options);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawScore(ctx, canvas, options);
+      __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawStreak(ctx, canvas, options);
+      __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawHitResponse(ctx, canvas, options);
+      __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].renderGameComponents(ctx, canvas, options, health);
+      __WEBPACK_IMPORTED_MODULE_0__components__["a" /* default */].drawUserComponents(ctx, canvas, options);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    g.renderGameFinished();
+    requestAnimationFrame(e=>{
+      Canvas.draw(ctx, canvas, options, g);
+    });
+
+  }
+
+
+
+}
+
+
+/* harmony default export */ __webpack_exports__["a"] = (Canvas);
+
 
 /***/ }),
 /* 7 */

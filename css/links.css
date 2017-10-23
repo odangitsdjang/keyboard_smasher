@@ -1,6 +1,7 @@
 .links {
   top: -webkit-calc(50% - 250px);
   left: -webkit-calc(50% - 475px);  /* 452 to get it right next to the canvas*/
+  width: 200px;
   display: flex;
   flex-direction: column;
 }
@@ -31,6 +32,6 @@
 }
 
 .links h2 {
-  color: white;
+  color:rgb(50,50,50);
   text-align: center;
 }

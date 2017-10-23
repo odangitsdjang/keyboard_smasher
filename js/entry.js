@@ -2,6 +2,7 @@ import components from './components';
 import Canvas from './canvas';
 import OnClickUtil from './onclicks';
 import GameFinished from './game_finished';
+
 // import { }  from '../game/algorithm';
 
 // export const INTERVAL_MILLISECOND = 6.944444;   144hz

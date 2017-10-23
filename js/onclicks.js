@@ -110,6 +110,18 @@ class OnClickUtil {
   static addAllLinks(ctx, canvas, options) {
     OnClickUtil.songLinks(ctx, canvas, options);
     OnClickUtil.keyPressedLinks(options);
+    OnClickUtil.closeInitialModal();
+  }
+
+  // This is for the instructions in the beginning
+  static closeInitialModal() {
+    const modal = document.querySelector('.modal');
+
+    window.onclick = function(event) {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    };
   }
 }
 
