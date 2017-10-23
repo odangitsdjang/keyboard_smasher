@@ -35,8 +35,10 @@ class Components {
       }
       Object.keys(options.beatMapData.beatmaps).forEach(key => {
         options.beatMapData.beatmaps[key].forEach( secondVal => {
+          // Ideally it should be secondVal < options.songAudio.currentTime + INTERVAL_MILLISECOND  / 1000 
+          // but I'm having lag issues and this will help resolve double note creation
           if (secondVal >= options.songAudio.currentTime && 
-              ( secondVal < options.songAudio.currentTime + (INTERVAL_MILLISECOND + 1) / 1000 
+              ( secondVal < options.songAudio.currentTime + (INTERVAL_MILLISECOND-1 ) / 1000 
               )) {
                 options.activeComponents[key].push(0);
                 // optimization because when we create beatmap we sorted it
