@@ -100,15 +100,16 @@ class Components {
 
   static addGameComponents(ctx, canvas, options) {
     if (options.songAudio.currentTime) {
-      if (options.songAudio.currentTime > 3 && options.songAudio.currentTime < 5) {
+      if (options.songAudio.currentTime > 3 && options.songAudio.currentTime < 8) {
         options.directions.style.color = "rgb(150,150,150)";
-      } else if (options.songAudio.currentTime > 5) {
-        options.directions.style.color = "rgb(50,50,50)";
+      } else if (options.songAudio.currentTime > 8) {
+        options.directions.style.display = "none";
       }
       Object.keys(options.beatMapData.beatmaps).forEach(key => {
         options.beatMapData.beatmaps[key].forEach( secondVal => {
-          if (secondVal >= options.songAudio.currentTime &&
-              secondVal < options.songAudio.currentTime+__WEBPACK_IMPORTED_MODULE_0__entry__["INTERVAL_MILLISECOND"]/1000 ) {
+          if (secondVal >= options.songAudio.currentTime && 
+              ( secondVal < options.songAudio.currentTime + (__WEBPACK_IMPORTED_MODULE_0__entry__["INTERVAL_MILLISECOND"] + 1) / 1000 
+              )) {
                 options.activeComponents[key].push(0);
                 // optimization because when we create beatmap we sorted it
                 // so we are guaranteed to only have one beatmap per key
@@ -619,7 +620,8 @@ class BeatMap {
       this.song = 1;
     }
   }
-  // Given the bpm get an array of seconds where there is a new measure
+  // Given the bpm get an increment of how often the measures are. 
+  // Speed 1 means one note per measure. higher speed = lower increments = more notes in each measure
   increments(bpm, speed=1) {
     return  (1 / (bpm/60)) / speed;
   }
@@ -671,7 +673,7 @@ class BeatMap {
     data.beatmaps["q"] = retArr.slice(0, retArr.length/3).sort((a,b)=>a-b);
     data.beatmaps["w"] = retArr.slice(retArr.length/3, 2*retArr.length/3).sort((a,b)=>a-b);
     data.beatmaps["e"] = retArr.slice(2 * retArr.length/3).sort((a,b)=>a-b);
-    // console.log(data);
+    console.log(data);
     return data;
   }
 
@@ -696,15 +698,15 @@ class BeatMap {
       this.bpm = 194;
       this.break = [[0,11.7]];
       // this.quad = [[20.79, 21.5], [49.5,50.5], [197.8,198.8]];
-      this.options.speed = 8.5;
+      this.options.speed = 9;
       this.options.songName = "Run Me Dry";
       this.measure = this.increments(this.bpm, 0.5);
     } else if (tracknum === 2) {
-      this.songLengthSeconds = 232 - 1;  // subtract 1 to end beatmap 3 seconds earlier
+      this.songLengthSeconds = 232 - 1;  
       this.chorus = [[68,90], [145, 167], [189, 195]];  // find the chorus manually from mp3
       this.bpm = 173.939;
       this.break = [[5,10]];
-      this.options.speed = 8.5;
+      this.options.speed = 9;
       this.options.songName = "Immortality";
       this.measure = this.increments(this.bpm);
     } else if (tracknum === 3) {
@@ -713,7 +715,7 @@ class BeatMap {
       this.bpm = 156;
       this.options.songName = "Limitless";
       this.break = [[5,10]];
-      this.options.speed = 17;
+      this.options.speed = 18;
       this.measure = this.increments(this.bpm, 2);
 
     }

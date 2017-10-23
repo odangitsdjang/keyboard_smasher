@@ -28,15 +28,16 @@ class Components {
 
   static addGameComponents(ctx, canvas, options) {
     if (options.songAudio.currentTime) {
-      if (options.songAudio.currentTime > 3 && options.songAudio.currentTime < 5) {
+      if (options.songAudio.currentTime > 3 && options.songAudio.currentTime < 8) {
         options.directions.style.color = "rgb(150,150,150)";
-      } else if (options.songAudio.currentTime > 5) {
-        options.directions.style.color = "rgb(50,50,50)";
+      } else if (options.songAudio.currentTime > 8) {
+        options.directions.style.display = "none";
       }
       Object.keys(options.beatMapData.beatmaps).forEach(key => {
         options.beatMapData.beatmaps[key].forEach( secondVal => {
-          if (secondVal >= options.songAudio.currentTime &&
-              secondVal < options.songAudio.currentTime+INTERVAL_MILLISECOND/1000 ) {
+          if (secondVal >= options.songAudio.currentTime && 
+              ( secondVal < options.songAudio.currentTime + (INTERVAL_MILLISECOND + 1) / 1000 
+              )) {
                 options.activeComponents[key].push(0);
                 // optimization because when we create beatmap we sorted it
                 // so we are guaranteed to only have one beatmap per key
